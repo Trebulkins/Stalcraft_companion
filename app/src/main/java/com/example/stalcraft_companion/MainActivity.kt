@@ -1,18 +1,17 @@
 package com.example.stalcraft_companion
 
 import android.os.Bundle
-import android.widget.LinearLayout
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import io.reactivex.disposables.CompositeDisposable
+import com.example.stalcraft_companion.database.RemoteDataSource
 
 private val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
     private lateinit var mainRecyclerView: RecyclerView
-    private lateinit var dataSource: LocalDataSource
+    private lateinit var dataSource: RemoteDataSource
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,7 +22,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        dataSource = LocalDataSource(application)
+        dataSource = RemoteDataSource(application)
         getMyMoviesList()
     }
 
@@ -35,5 +34,9 @@ class MainActivity : AppCompatActivity() {
     private fun setupViews() {
         mainRecyclerView = findViewById(R.id.mainrecyclerview)
         mainRecyclerView.layoutManager = LinearLayoutManager(this)
+    }
+
+    interface RecyclerItemListener {
+        fun onItemClick(view: View, position: Int)
     }
 }

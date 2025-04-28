@@ -2,6 +2,7 @@ package com.example.stalcraft_companion.database
 
 import android.util.Log
 import com.example.stalcraft_companion.api.RetrofitClient
+import com.example.stalcraft_companion.api.responses.ListingResponse
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -9,10 +10,10 @@ import io.reactivex.schedulers.Schedulers
 private val TAG = "RemoteDataSource"
 
 open class RemoteDataSource {
-    fun searchResultsObservable(query: String): Observable<KinoResponse> {
-        Log.d(TAG, "search/items")
-        return RetrofitClient.itemsApi
-            .searchMovie(RetrofitClient.APP_TOKEN)
+    fun ListingObservable(): Observable<ListingResponse> {
+        Log.d(TAG, "GET: listing.json")
+        return RetrofitClient.githubApi
+            .getItemsListing()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
     }
