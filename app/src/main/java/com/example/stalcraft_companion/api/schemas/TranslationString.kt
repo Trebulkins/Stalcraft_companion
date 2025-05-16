@@ -8,9 +8,13 @@ data class TranslationString(
     @Expose
     var type: String,
 
+    @SerializedName("text")
+    @Expose
+    var text: String? = null,
+
     @SerializedName("key")
     @Expose
-    var key: String,
+    var key: String? = null,
 
     @SerializedName("args")
     @Expose
@@ -18,5 +22,5 @@ data class TranslationString(
 
     @SerializedName("lines")
     @Expose
-    var lines: TranslationStringObj,
+    var lines: List<ValueObject>? = null,
 )
