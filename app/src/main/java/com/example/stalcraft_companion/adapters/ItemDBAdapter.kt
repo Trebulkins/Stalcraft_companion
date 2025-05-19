@@ -8,13 +8,14 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stalcraft_companion.MainActivity
+import com.example.stalcraft_companion.R
 import com.example.stalcraft_companion.api.schemas.ListingItem
 import com.squareup.picasso.Picasso
 
-class ListingAdapter(var itemsList: List<ListingItem>, var context: Context, var listener: MainActivity.RecyclerItemListener) : RecyclerView.Adapter<ListingAdapter.SearchItemsHolder>() {
+class ItemDBAdapter(var itemsList: List<ListingItem>, var context: Context, var listener: MainActivity.RecyclerItemListener) : RecyclerView.Adapter<ItemDBAdapter.SearchItemsHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchItemsHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.item_item_details, parent, false)
+        val view = LayoutInflater.from(context).inflate(R.layout.item_layout, parent, false)
 
         val viewHolder = SearchItemsHolder(view)
         view.setOnClickListener { v -> listener.onItemClick(v, viewHolder.adapterPosition) }
@@ -35,7 +36,7 @@ class ListingAdapter(var itemsList: List<ListingItem>, var context: Context, var
         return itemList.size
     }
 
-    fun getItemAtPosition(pos: Int): item {
+    fun getItemAtPosition(pos: Int): Int {
         return itemList[pos]
     }
 

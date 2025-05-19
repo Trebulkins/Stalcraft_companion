@@ -2,4 +2,11 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="DEFAULT">#808080</color>
+    <color name="RANK_NEWBIE">#00FF00</color>
+    <color name="RANK_STALKER">#00008B</color>
+    <color name="RANK_VETERAN">#FF00FF</color>
+    <color name="RANK_MASTER">#8B0000</color>
+    <color name="RANK_LEGEND">#FFD700</color>
 </resources>
