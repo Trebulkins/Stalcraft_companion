@@ -30,49 +30,73 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/item_category"
-            android:layout_width="230dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:text="Оружие / Пистолеты"
-            android:textColor="#80000000"
-            app:layout_constraintStart_toEndOf="@+id/item_icon"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/item_category2"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:text="Персональный при использовании"
-            android:textColor="#80000000"
-            app:layout_constraintStart_toEndOf="@+id/imageView"
-            app:layout_constraintTop_toBottomOf="@+id/item_title" />
-
-        <TextView
             android:id="@+id/item_title"
             android:layout_width="230dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:layout_marginTop="4dp"
+            android:layout_marginEnd="16dp"
             android:text="ОЦ-33 «Пернач»"
             android:textColor="@color/RANK_MASTER"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@+id/item_icon"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/item_category" />
 
+        <TextView
+            android:id="@+id/item_category"
+            android:layout_width="230dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:text="Оружие / Пистолеты"
+            android:textColor="#80000000"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/item_state"
+            android:layout_width="200dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:text="Персональный при использовании"
+            android:textColor="#80000000"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/item_title" />
+
+        <TextView
+            android:id="@+id/item_weight"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="12dp"
+            android:text="1,15 кг"
+            android:textAlignment="textEnd"
+            android:textColor="#80000000"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/item_state_img"
             android:layout_width="22dp"
             android:layout_height="20dp"
-            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            app:layout_constraintStart_toEndOf="@+id/item_icon"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toStartOf="@+id/item_state"
             app:layout_constraintTop_toBottomOf="@+id/item_title"
             app:srcCompat="@drawable/personal_on_use" />
+
+        <ImageView
+            android:id="@+id/weight_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="12dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/item_weight"
+            app:srcCompat="@drawable/outline_weight_24" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
