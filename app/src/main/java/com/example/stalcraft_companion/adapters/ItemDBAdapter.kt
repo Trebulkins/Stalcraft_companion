@@ -1,6 +1,7 @@
 package com.example.stalcraft_companion.adapters
 
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,12 +10,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stalcraft_companion.MainActivity
 import com.example.stalcraft_companion.R
+import com.example.stalcraft_companion.api.RetrofitClient
 import com.example.stalcraft_companion.api.schemas.Item
 import com.squareup.picasso.Picasso
 
-class ItemDBAdapter(var itemsList: List<Item>, var context: Context, var listener: MainActivity.RecyclerItemListener) : RecyclerView.Adapter<ItemDBAdapter.SearchItemsHolder>() {
+class ItemDBAdapter(private var itemList: List<Item>, private var context: Context, var listener: MainActivity.RecyclerItemListener) : RecyclerView.Adapter<ItemDBAdapter.ItemDBHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchItemsHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemDBHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.item_layout, parent, false)
 
         val viewHolder = ItemDBHolder(view)
@@ -22,22 +24,28 @@ class ItemDBAdapter(var itemsList: List<Item>, var context: Context, var listene
         return viewHolder
     }
 
-    override fun onBindViewHolder(holder: ItemDBHolder, position: Int) {
-        holder.titleTextView.text = itemsList[position].nameRu
-        holder.originalTitleTextView.text = itemsList[position].nameOriginal
-        holder.releaseDateTextView.text = itemsList[position].year.toString()
-
-        if (itemList[position].posterUrl != null) {
-            Picasso.get().load(RetrofitClient.GITHUB_URL + itemList[position].posterUrl).into(holder.itemImageView)
+    override fun onBindViewHolder(holder: ItemDBHolder, pos: Int) {
+        holder.itemTitle.text = itemList[pos].name.toString()
+        holder.itemTitle.setTextColor(Color.parseColor(itemList[pos].color))
+        holder.itemCategory.text = itemList[pos].category
+        holder.itemRarity.setBackgroundColor(Color.parseColor(itemList[pos].color))
+        holder.itemState.text = "@string/${itemList[pos].status!!.state}"
+        holder.itemWeight.text = "? кг"
+        when (itemList[pos].status!!.state) {
+            "PERSONAL_ON_USE" -> holder.itemStateImg.setImageResource(R.drawable.personal_on_use)
+            "NON_DROP" -> holder.itemStateImg.setImageResource(R.drawable.non_drop)
+            "PERSONAL_DROP_ON_GET" -> holder.itemStateImg.setImageResource(R.drawable.personal_drop_on_get)
         }
+
+        Picasso.get().load(RetrofitClient.DATABASE_ICONS_URL + itemList[pos].category + itemList[pos].id + ".png").into(holder.itemIcon)
     }
 
     override fun getItemCount(): Int {
-        return itemsList.size
+        return itemList.size
     }
 
     fun getItemAtPosition(pos: Int): Item {
-        return itemsList[pos]
+        return itemList[pos]
     }
 
     inner class ItemDBHolder(v: View) : RecyclerView.ViewHolder(v) {

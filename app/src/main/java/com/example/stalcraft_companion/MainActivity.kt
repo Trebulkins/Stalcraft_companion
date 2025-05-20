@@ -22,13 +22,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        dataSource = RemoteDataSource(application)
-        getMyMoviesList()
+        dataSource = RemoteDataSource()
     }
 
     override fun onStop() {
         super.onStop()
-        compositeDisposable.clear()
     }
 
     private fun setupViews() {
@@ -37,6 +35,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     interface RecyclerItemListener {
-        fun onItemClick(view: View, position: Int)
+        fun onItemClick(view: View, position: Int) {
+
+        }
     }
 }

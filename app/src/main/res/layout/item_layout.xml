@@ -37,7 +37,7 @@
             android:layout_marginEnd="16dp"
             android:text="ОЦ-33 «Пернач»"
             android:textColor="@color/RANK_MASTER"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/item_category" />
@@ -55,14 +55,14 @@
 
         <TextView
             android:id="@+id/item_state"
-            android:layout_width="200dp"
-            android:layout_height="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="14dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
             android:text="Персональный при использовании"
             android:textColor="#80000000"
-            android:textSize="12sp"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:textSize="10sp"
+            app:layout_constraintStart_toEndOf="@+id/item_state_img"
             app:layout_constraintTop_toBottomOf="@+id/item_title" />
 
         <TextView
@@ -80,17 +80,17 @@
 
         <ImageView
             android:id="@+id/item_state_img"
-            android:layout_width="22dp"
-            android:layout_height="20dp"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintEnd_toStartOf="@+id/item_state"
+            android:layout_marginEnd="232dp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/item_title"
             app:srcCompat="@drawable/personal_on_use" />
 
         <ImageView
             android:id="@+id/weight_icon"
-            android:layout_width="wrap_content"
+            android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_marginEnd="4dp"
             android:layout_marginBottom="12dp"

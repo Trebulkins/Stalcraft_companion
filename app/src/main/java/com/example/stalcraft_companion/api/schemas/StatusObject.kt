@@ -3,12 +3,8 @@ package com.example.stalcraft_companion.api.schemas
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class GithubResponse(
-    @SerializedName("name")
+data class StatusObject(
+    @SerializedName("state")
     @Expose
-    var name: String? = null,
-
-    @SerializedName("path")
-    @Expose
-    var path: String? = null,
+    var state: String? = null
 )

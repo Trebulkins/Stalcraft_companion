@@ -18,9 +18,9 @@ data class TranslationString(
 
     @SerializedName("args")
     @Expose
-    var args: List<ValueObject>? = null,
+    var args: List<StatusObject>? = null,
 
     @SerializedName("lines")
     @Expose
-    var lines: List<ValueObject>? = null,
+    var lines: List<StatusObject>? = null,
 )

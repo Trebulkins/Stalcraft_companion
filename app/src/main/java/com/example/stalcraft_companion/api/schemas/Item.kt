@@ -22,7 +22,7 @@ data class Item (
 
     @SerializedName("status")
     @Expose
-    var status: ValueObject? = null,
+    var status: StatusObject? = null,
 
     @SerializedName("infoBlocks")
     @Expose
