@@ -11,7 +11,7 @@ import io.reactivex.schedulers.Schedulers
 private val TAG = "RemoteDataSource"
 
 open class RemoteDataSource {
-    fun ListingObservable(): Observable<ListingResponse>? {
+    fun ListingObservable(): Observable<List<ListingResponse>>? {
         Log.d(TAG, "GET: listing.json")
         return RetrofitClient.githubApi
             .getItemsListing()

@@ -1,9 +1,13 @@
 package com.example.stalcraft_companion.api.schemas
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
+@Entity(tableName = "items_table")
 data class Item (
+    @PrimaryKey
     @SerializedName("id")
     @Expose
     var id: String? = null,

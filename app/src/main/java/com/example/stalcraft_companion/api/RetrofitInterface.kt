@@ -8,7 +8,7 @@ import retrofit2.http.Path
 
 interface RetrofitInterface {
     @GET("listing.json")
-    fun getItemsListing(): Observable<ListingResponse>
+    fun getItemsListing(): Observable<List<ListingResponse>>
 
     @GET("{path}")
     fun getItem(@Path("path") path: String): Item
