@@ -14,13 +14,11 @@ import com.example.stalcraft_companion.api.RetrofitClient
 import com.example.stalcraft_companion.api.schemas.Item
 import com.squareup.picasso.Picasso
 
-class ItemDBAdapter(private var itemList: List<Item>, private var context: Context, var listener: MainActivity.RecyclerItemListener) : RecyclerView.Adapter<ItemDBAdapter.ItemDBHolder>() {
+class ItemDBAdapter(private var itemList: List<Item>, private var context: Context) : RecyclerView.Adapter<ItemDBAdapter.ItemDBHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemDBHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.item_layout, parent, false)
-
         val viewHolder = ItemDBHolder(view)
-        view.setOnClickListener { v -> listener.onItemClick(v, viewHolder.adapterPosition) }
         return viewHolder
     }
 
@@ -56,11 +54,5 @@ class ItemDBAdapter(private var itemList: List<Item>, private var context: Conte
         var itemState: TextView = v.findViewById(R.id.item_state)
         var itemStateImg: ImageView = v.findViewById(R.id.item_state_img)
         var itemWeight: TextView = v.findViewById(R.id.item_weight)
-
-        init {
-            v.setOnClickListener { v: View ->
-                listener.onItemClick(v, adapterPosition)
-            }
-        }
     }
 }

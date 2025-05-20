@@ -10,7 +10,7 @@ data class Item (
     @PrimaryKey
     @SerializedName("id")
     @Expose
-    var id: String? = null,
+    var id: String,
 
     @SerializedName("category")
     @Expose
