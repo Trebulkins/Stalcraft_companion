@@ -22,5 +22,5 @@ data class ListingItem(
 
     @SerializedName("status")
     @Expose
-    var status: List<StatusObject>? = null,
+    var status: StatusObject? = null,
 )

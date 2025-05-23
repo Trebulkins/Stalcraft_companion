@@ -3,6 +3,20 @@ package com.example.stalcraft_companion.api.schemas
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
+data class TranslationLines(
+    @SerializedName("ru")
+    @Expose
+    var ru: String? = null,
+
+    @SerializedName("en")
+    @Expose
+    var en: String? = null,
+
+    @SerializedName("es")
+    @Expose
+    var es: String? = null,
+
+)
 data class TranslationString(
     @SerializedName("type")
     @Expose
@@ -16,11 +30,7 @@ data class TranslationString(
     @Expose
     var key: String? = null,
 
-    @SerializedName("args")
-    @Expose
-    var args: List<StatusObject>? = null,
-
     @SerializedName("lines")
     @Expose
-    var lines: List<StatusObject>? = null,
+    var lines: List<TranslationLines>? = null,
 )

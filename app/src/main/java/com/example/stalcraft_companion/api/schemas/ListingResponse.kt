@@ -1,12 +1,17 @@
 package com.example.stalcraft_companion.api.schemas
 
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class ListingResponse(
     @SerializedName("data")
     @Expose
-    var data: String? = null,
+    var data: String,
+
+    @PrimaryKey
+    @Expose
+    var id: String = data.substringAfterLast('/').dropLast(5),
 
     @SerializedName("icon")
     @Expose
