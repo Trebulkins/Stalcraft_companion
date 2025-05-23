@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.stalcraft_companion.R
 import com.example.stalcraft_companion.api.RetrofitClient
 import com.example.stalcraft_companion.api.schemas.Item
-import com.example.stalcraft_companion.api.schemas.ListingItem
 import com.example.stalcraft_companion.api.schemas.ListingResponse
 import com.squareup.picasso.Picasso
 
@@ -35,7 +34,7 @@ class ItemListingAdapter(private var itemList: List<ListingResponse>, private va
             "PERSONAL_DROP_ON_GET" -> holder.itemStateImg.setImageResource(R.drawable.personal_drop_on_get)
         }
 
-        Picasso.get().load(RetrofitClient.DATABASE_URL_RU + itemList[pos].icon).into(holder.itemIcon)
+        Picasso.get().load(RetrofitClient.DATABASE_URL.substringBeforeLast('/') + itemList[pos].icon).into(holder.itemIcon)
     }
 
     override fun getItemCount(): Int {
