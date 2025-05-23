@@ -7,13 +7,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.stalcraft_companion.adapters.ItemDBAdapter
-import com.example.stalcraft_companion.api.schemas.Item
+import com.example.stalcraft_companion.adapters.ItemListingAdapter
 import com.example.stalcraft_companion.api.schemas.ListingResponse
 import com.example.stalcraft_companion.database.LocalDataSource
+import com.example.stalcraft_companion.database.RemoteDataSource
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
@@ -23,13 +22,13 @@ private val TAG = "MainActivity"
 class MainActivity : AppCompatActivity() {
     private lateinit var mainRecyclerView: RecyclerView
     private lateinit var localDataSource: LocalDataSource
-    private lateinit var adapter: ItemDBAdapter
+    private lateinit var adapter: ItemListingAdapter
+    private val dataSource = RemoteDataSource()
     private val compositeDisposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         setupViews()
     }
 
@@ -41,19 +40,20 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
+        compositeDisposable.clear()
     }
 
-    private val itemsObservable: Observable<List<Item>>
-        get() = localDataSource.allItems
-    private val observer: DisposableObserver<List<Item>>
-        get() = object : DisposableObserver<List<Item>>() {
+    private val itemsObservable: Observable<List<ListingResponse>> = dataSource.listingObservable()!!
+    private val observer: DisposableObserver<List<ListingResponse>>
+        get() = object : DisposableObserver<List<ListingResponse>>() {
 
-            override fun onNext(itemList: List<Item>) {
-                adapter = ItemDBAdapter(itemList, this@MainActivity)
+
+            override fun onNext(t: List<ListingResponse>) {
+                adapter = ItemListingAdapter(t, this@MainActivity)
                 mainRecyclerView.adapter = adapter
             }
 
-            override fun onError(@NonNull e: Throwable) {
+            override fun onError(e: Throwable) {
                 Log.d(TAG, "Error$e")
                 e.printStackTrace()
                 displayError("Error fetching items list")
@@ -69,19 +69,12 @@ class MainActivity : AppCompatActivity() {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeWith(observer)
-
         compositeDisposable.add(itemsDisposable)
     }
 
     private fun setupViews() {
         mainRecyclerView = findViewById(R.id.mainrecyclerview)
         mainRecyclerView.layoutManager = LinearLayoutManager(this)
-    }
-
-    interface RecyclerItemListener {
-        fun onItemClick(view: View, position: Int) {
-
-        }
     }
 
     private fun showToast(str: String) {

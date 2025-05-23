@@ -8,13 +8,14 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.stalcraft_companion.MainActivity
 import com.example.stalcraft_companion.R
 import com.example.stalcraft_companion.api.RetrofitClient
 import com.example.stalcraft_companion.api.schemas.Item
+import com.example.stalcraft_companion.api.schemas.ListingItem
+import com.example.stalcraft_companion.api.schemas.ListingResponse
 import com.squareup.picasso.Picasso
 
-class ItemDBAdapter(private var itemList: List<Item>, private var context: Context) : RecyclerView.Adapter<ItemDBAdapter.ItemDBHolder>() {
+class ItemListingAdapter(private var itemList: List<ListingResponse>, private var context: Context) : RecyclerView.Adapter<ItemListingAdapter.ItemDBHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemDBHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.item_layout, parent, false)
@@ -25,24 +26,23 @@ class ItemDBAdapter(private var itemList: List<Item>, private var context: Conte
     override fun onBindViewHolder(holder: ItemDBHolder, pos: Int) {
         holder.itemTitle.text = itemList[pos].name.toString()
         holder.itemTitle.setTextColor(Color.parseColor(itemList[pos].color))
-        holder.itemCategory.text = itemList[pos].category
+        holder.itemCategory.text = itemList[pos].data.substringBeforeLast('/')
         holder.itemRarity.setBackgroundColor(Color.parseColor(itemList[pos].color))
         holder.itemState.text = "@string/${itemList[pos].status!!.state}"
-        holder.itemWeight.text = "? кг"
         when (itemList[pos].status!!.state) {
             "PERSONAL_ON_USE" -> holder.itemStateImg.setImageResource(R.drawable.personal_on_use)
             "NON_DROP" -> holder.itemStateImg.setImageResource(R.drawable.non_drop)
             "PERSONAL_DROP_ON_GET" -> holder.itemStateImg.setImageResource(R.drawable.personal_drop_on_get)
         }
 
-        Picasso.get().load(RetrofitClient.DATABASE_ICONS_URL + itemList[pos].category + itemList[pos].id + ".png").into(holder.itemIcon)
+        Picasso.get().load(RetrofitClient.DATABASE_URL_RU + itemList[pos].icon).into(holder.itemIcon)
     }
 
     override fun getItemCount(): Int {
         return itemList.size
     }
 
-    fun getItemAtPosition(pos: Int): Item {
+    fun getItemAtPosition(pos: Int): ListingResponse {
         return itemList[pos]
     }
 
@@ -53,6 +53,5 @@ class ItemDBAdapter(private var itemList: List<Item>, private var context: Conte
         var itemRarity: View = v.findViewById(R.id.item_rarity_color)
         var itemState: TextView = v.findViewById(R.id.item_state)
         var itemStateImg: ImageView = v.findViewById(R.id.item_state_img)
-        var itemWeight: TextView = v.findViewById(R.id.item_weight)
     }
 }
