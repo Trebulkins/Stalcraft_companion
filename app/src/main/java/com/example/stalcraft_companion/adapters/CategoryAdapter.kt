@@ -44,7 +44,7 @@ class CategoryAdapter(
             )
             TYPE_ITEM -> ListingItemViewHolder(
                 LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_listing, parent, false)
+                    .inflate(R.layout.item_layout, parent, false)
             )
             else -> throw IllegalArgumentException("Invalid view type")
         }

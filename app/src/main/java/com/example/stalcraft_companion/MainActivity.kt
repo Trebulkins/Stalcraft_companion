@@ -6,7 +6,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.stalcraft_companion.adapters.CategoryAdapter
 import com.example.stalcraft_companion.adapters.ItemListingAdapter
+import com.example.stalcraft_companion.api.schemas.CategoryGroup
 import com.example.stalcraft_companion.api.schemas.ListingItem
 import com.example.stalcraft_companion.database.LocalDataSource
 import com.example.stalcraft_companion.database.RemoteDataSource
@@ -21,7 +23,7 @@ private const val TAG = "MainActivity"
 class MainActivity : AppCompatActivity() {
     private lateinit var mainRecyclerView: RecyclerView
     private lateinit var localDataSource: LocalDataSource
-    private lateinit var adapter: ItemListingAdapter
+    private lateinit var adapter: CategoryAdapter
     private val dataSource = RemoteDataSource()
     private val compositeDisposable = CompositeDisposable()
 
@@ -46,7 +48,13 @@ class MainActivity : AppCompatActivity() {
     private val observer: DisposableObserver<List<ListingItem>>
         get() = object : DisposableObserver<List<ListingItem>>() {
             override fun onNext(t: List<ListingItem>) {
-                adapter = ItemListingAdapter(t, this@MainActivity)
+                val groups = t.groupBy { it.data.substringBeforeLast('/') }
+                    .map { (category, items) ->
+                        CategoryGroup(category, items)
+                    }
+                    .sortedBy { it.categoryName }
+
+                adapter = CategoryAdapter(groups) { _ -> }
                 mainRecyclerView.adapter = adapter
             }
 
