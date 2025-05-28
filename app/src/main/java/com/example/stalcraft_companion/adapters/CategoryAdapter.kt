@@ -28,19 +28,24 @@ class CategoryAdapter(
 
     override fun getItemViewType(position: Int): Int {
         var pos = 0
-        for (group in groups) {
+        groups.forEach { group ->
             if (position == pos) return TYPE_CATEGORY
             pos++
 
             if (group.isExpanded) {
-                for (subgroup in group.subcategories) {
-                    if (position == pos) return TYPE_SUBCATEGORY
-                    pos++
+                if (group.hasSubcategories()) {
+                    group.subcategories.forEach { subgroup ->
+                        if (position == pos) return TYPE_SUBCATEGORY
+                        pos++
 
-                    if (subgroup.isExpanded) {
-                        if (position < pos + subgroup.items.size) return TYPE_ITEM
-                        pos += subgroup.items.size
+                        if (subgroup.isExpanded) {
+                            if (position < pos + subgroup.items.size) return TYPE_ITEM
+                            pos += subgroup.items.size
+                        }
                     }
+                } else {
+                    if (position < pos + group.getAllItems().size) return TYPE_ITEM
+                    pos += group.getAllItems().size
                 }
             }
         }
@@ -57,17 +62,16 @@ class CategoryAdapter(
                 LayoutInflater.from(parent.context)
                     .inflate(R.layout.item_subcategory, parent, false)
             )
-            TYPE_ITEM -> ListingItemViewHolder(
+            else -> ListingItemViewHolder(
                 LayoutInflater.from(parent.context)
                     .inflate(R.layout.item_layout, parent, false)
             )
-            else -> throw IllegalArgumentException("Invalid view type")
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         var pos = 0
-        for (group in groups) {
+        groups.forEach { group ->
             if (position == pos) {
                 (holder as CategoryViewHolder).bind(group)
                 holder.itemView.setOnClickListener {
@@ -79,26 +83,36 @@ class CategoryAdapter(
             pos++
 
             if (group.isExpanded) {
-                for (subgroup in group.subcategories) {
-                    if (position == pos) {
-                        (holder as SubcategoryViewHolder).bind(subgroup)
-                        holder.itemView.setOnClickListener {
-                            subgroup.isExpanded = !subgroup.isExpanded
-                            notifyDataSetChanged()
-                        }
-                        return
-                    }
-                    pos++
-
-                    if (subgroup.isExpanded) {
-                        if (position < pos + subgroup.items.size) {
-                            val item = subgroup.items[position - pos]
-                            (holder as ListingItemViewHolder).bind(item)
-                            holder.itemView.setOnClickListener { onItemClick(item) }
+                if (group.hasSubcategories()) {
+                    group.subcategories.forEach { subgroup ->
+                        if (position == pos) {
+                            (holder as SubcategoryViewHolder).bind(subgroup)
+                            holder.itemView.setOnClickListener {
+                                subgroup.isExpanded = !subgroup.isExpanded
+                                notifyDataSetChanged()
+                            }
                             return
                         }
-                        pos += subgroup.items.size
+                        pos++
+
+                        if (subgroup.isExpanded) {
+                            if (position < pos + subgroup.items.size) {
+                                val item = subgroup.items[position - pos]
+                                (holder as ListingItemViewHolder).bind(item)
+                                holder.itemView.setOnClickListener { onItemClick(item) }
+                                return
+                            }
+                            pos += subgroup.items.size
+                        }
                     }
+                } else {
+                    if (position < pos + group.getAllItems().size) {
+                        val item = group.getAllItems()[position - pos]
+                        (holder as ListingItemViewHolder).bind(item)
+                        holder.itemView.setOnClickListener { onItemClick(item) }
+                        return
+                    }
+                    pos += group.getAllItems().size
                 }
             }
         }
@@ -106,13 +120,17 @@ class CategoryAdapter(
 
     override fun getItemCount(): Int {
         var count = groups.size
-        for (group in groups) {
+        groups.forEach { group ->
             if (group.isExpanded) {
-                count += group.subcategories.size
-                for (subgroup in group.subcategories) {
-                    if (subgroup.isExpanded) {
-                        count += subgroup.items.size
+                if (group.hasSubcategories()) {
+                    count += group.subcategories.size
+                    group.subcategories.forEach { subgroup ->
+                        if (subgroup.isExpanded) {
+                            count += subgroup.items.size
+                        }
                     }
+                } else {
+                    count += group.getAllItems().size
                 }
             }
         }
@@ -137,7 +155,7 @@ class CategoryAdapter(
         fun bind(subgroup: SubcategoryGroup) {
             title.text = subgroup.subcategoryName
             icon.rotation = if (subgroup.isExpanded) 180f else 0f
-            itemView.setPadding(50, 0, 50, 0) // Отступ для подкатегории
+            itemView.setPadding(16, 0, 0, 0)
         }
     }
 
@@ -145,6 +163,7 @@ class CategoryAdapter(
         fun bind(item: ListingItem) {
             itemView.findViewById<TextView>(R.id.item_title).text = item.name.lines?.ru
             itemView.findViewById<TextView>(R.id.item_category).text = item.data.substringBeforeLast('/').substringAfter('/').substringAfter('/')
+            itemView.setPadding(if (item.hasSubcategory) 32 else 16,0, 0, 0)
 
             when (item.color) {
                 "DEFAULT" -> {

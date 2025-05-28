@@ -49,15 +49,27 @@ class MainActivity : AppCompatActivity() {
     private val observer: DisposableObserver<List<ListingItem>>
         get() = object : DisposableObserver<List<ListingItem>>() {
             override fun onNext(t: List<ListingItem>) {
-                val categoryGroups = t.groupBy { it.data.substringBeforeLast('/').substringAfter('/').substringAfter('/').substringBeforeLast('/') }
+                val categoryGroups = t.groupBy { it.category }
                     .map { (category, categoryItems) ->
-                        val subcategoryGroups = categoryItems.groupBy { it.data.substringBeforeLast('/').substringAfter('/').substringAfter('/') }
+                        // Разделяем на элементы с подкатегориями и без
+                        val (withSubcat, withoutSubcat) = categoryItems.partition { it.hasSubcategory }
+
+                        val subcategories = withSubcat.groupBy { it.subcategory }
                             .map { (subcategory, subcategoryItems) ->
                                 SubcategoryGroup(subcategory, subcategoryItems)
                             }
-                            .sortedBy { it.subcategoryName }
 
-                        CategoryGroup(category, subcategoryGroups)
+                        // Добавляем элементы без подкатегорий как отдельную "пустую" подкатегорию
+                        val allSubcategories = if (withoutSubcat.isNotEmpty()) {
+                            subcategories + SubcategoryGroup("", withoutSubcat)
+                        } else {
+                            subcategories
+                        }
+
+                        CategoryGroup(
+                            categoryName = category,
+                            subcategories = allSubcategories.sortedBy { it.subcategoryName }
+                        )
                     }
                     .sortedBy { it.categoryName }
 
