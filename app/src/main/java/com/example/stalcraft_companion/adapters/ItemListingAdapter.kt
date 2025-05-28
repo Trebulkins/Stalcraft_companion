@@ -10,10 +10,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stalcraft_companion.R
 import com.example.stalcraft_companion.api.RetrofitClient
-import com.example.stalcraft_companion.api.schemas.ListingResponse
+import com.example.stalcraft_companion.api.schemas.ListingItem
 import com.squareup.picasso.Picasso
 
-class ItemListingAdapter(private var itemList: List<ListingResponse>, private var context: Context) : RecyclerView.Adapter<ItemListingAdapter.ItemDBHolder>() {
+class ItemListingAdapter(private var itemList: List<ListingItem>, private var context: Context) : RecyclerView.Adapter<ItemListingAdapter.ItemDBHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemDBHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.item_layout, parent, false)
@@ -40,7 +40,7 @@ class ItemListingAdapter(private var itemList: List<ListingResponse>, private va
         return itemList.size
     }
 
-    fun getItemAtPosition(pos: Int): ListingResponse {
+    fun getItemAtPosition(pos: Int): ListingItem {
         return itemList[pos]
     }
 

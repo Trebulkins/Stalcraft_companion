@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stalcraft_companion.adapters.ItemListingAdapter
-import com.example.stalcraft_companion.api.schemas.ListingResponse
+import com.example.stalcraft_companion.api.schemas.ListingItem
 import com.example.stalcraft_companion.database.LocalDataSource
 import com.example.stalcraft_companion.database.RemoteDataSource
 import io.reactivex.Observable
@@ -42,10 +42,10 @@ class MainActivity : AppCompatActivity() {
         compositeDisposable.clear()
     }
 
-    private val itemsObservable: Observable<List<ListingResponse>> = dataSource.listingObservable()!!
-    private val observer: DisposableObserver<List<ListingResponse>>
-        get() = object : DisposableObserver<List<ListingResponse>>() {
-            override fun onNext(t: List<ListingResponse>) {
+    private val itemsObservable: Observable<List<ListingItem>> = dataSource.listingObservable()
+    private val observer: DisposableObserver<List<ListingItem>>
+        get() = object : DisposableObserver<List<ListingItem>>() {
+            override fun onNext(t: List<ListingItem>) {
                 adapter = ItemListingAdapter(t, this@MainActivity)
                 mainRecyclerView.adapter = adapter
             }

@@ -4,7 +4,7 @@ import androidx.room.PrimaryKey
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class ListingResponse(
+data class ListingItem(
     @SerializedName("data")
     @Expose
     var data: String,
