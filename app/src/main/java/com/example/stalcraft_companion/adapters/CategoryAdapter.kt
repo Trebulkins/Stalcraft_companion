@@ -1,5 +1,6 @@
 package com.example.stalcraft_companion.adapters
 
+import android.content.res.Resources
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,7 @@ import com.example.stalcraft_companion.R
 import com.example.stalcraft_companion.api.RetrofitClient
 import com.example.stalcraft_companion.api.schemas.CategoryGroup
 import com.example.stalcraft_companion.api.schemas.ListingItem
+import com.example.stalcraft_companion.api.schemas.SubcategoryGroup
 import com.squareup.picasso.Picasso
 
 class CategoryAdapter(
@@ -57,33 +59,47 @@ class CategoryAdapter(
             )
             TYPE_ITEM -> ListingItemViewHolder(
                 LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_listing, parent, false)
+                    .inflate(R.layout.item_layout, parent, false)
             )
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        var cumulativePos = 0
+        var pos = 0
         for (group in groups) {
-            if (position == cumulativePos) {
-                (holder as CategoryHeaderViewHolder).bind(group)
+            if (position == pos) {
+                (holder as CategoryViewHolder).bind(group)
                 holder.itemView.setOnClickListener {
                     group.isExpanded = !group.isExpanded
                     notifyDataSetChanged()
                 }
                 return
             }
-            cumulativePos++
+            pos++
 
             if (group.isExpanded) {
-                if (position < cumulativePos + group.items.size) {
-                    val item = group.items[position - cumulativePos]
-                    (holder as ListingItemViewHolder).bind(item)
-                    holder.itemView.setOnClickListener { onItemClick(item) }
-                    return
+                for (subgroup in group.subcategories) {
+                    if (position == pos) {
+                        (holder as SubcategoryViewHolder).bind(subgroup)
+                        holder.itemView.setOnClickListener {
+                            subgroup.isExpanded = !subgroup.isExpanded
+                            notifyDataSetChanged()
+                        }
+                        return
+                    }
+                    pos++
+
+                    if (subgroup.isExpanded) {
+                        if (position < pos + subgroup.items.size) {
+                            val item = subgroup.items[position - pos]
+                            (holder as ListingItemViewHolder).bind(item)
+                            holder.itemView.setOnClickListener { onItemClick(item) }
+                            return
+                        }
+                        pos += subgroup.items.size
+                    }
                 }
-                cumulativePos += group.items.size
             }
         }
     }
@@ -92,26 +108,43 @@ class CategoryAdapter(
         var count = groups.size
         for (group in groups) {
             if (group.isExpanded) {
-                count += group.items.size
+                count += group.subcategories.size
+                for (subgroup in group.subcategories) {
+                    if (subgroup.isExpanded) {
+                        count += subgroup.items.size
+                    }
+                }
             }
         }
         return count
     }
 
-    inner class CategoryHeaderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private val categoryName: TextView = view.findViewById(R.id.categoryName)
-        private val expandIcon: ImageView = view.findViewById(R.id.expandIcon)
+    // ViewHolders
+    inner class CategoryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        private val title: TextView = view.findViewById(R.id.tvTitle)
+        private val icon: ImageView = view.findViewById(R.id.ivIcon)
 
         fun bind(group: CategoryGroup) {
-            categoryName.text = group.categoryName
-            expandIcon.rotation = if (group.isExpanded) 180f else 0f
+            title.text = group.categoryName
+            icon.rotation = if (group.isExpanded) 180f else 0f
+        }
+    }
+
+    inner class SubcategoryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        private val title: TextView = view.findViewById(R.id.tvTitle)
+        private val icon: ImageView = view.findViewById(R.id.ivIcon)
+
+        fun bind(subgroup: SubcategoryGroup) {
+            title.text = subgroup.subcategoryName
+            icon.rotation = if (subgroup.isExpanded) 180f else 0f
+            itemView.setPadding(50, 0, 50, 0) // Отступ для подкатегории
         }
     }
 
     inner class ListingItemViewHolder(view: View): RecyclerView.ViewHolder(view) {
         fun bind(item: ListingItem) {
             itemView.findViewById<TextView>(R.id.item_title).text = item.name.lines?.ru
-            itemView.findViewById<TextView>(R.id.item_category).text = item.data.substringBeforeLast('/')
+            itemView.findViewById<TextView>(R.id.item_category).text = item.data.substringBeforeLast('/').substringAfter('/').substringAfter('/')
 
             when (item.color) {
                 "DEFAULT" -> {

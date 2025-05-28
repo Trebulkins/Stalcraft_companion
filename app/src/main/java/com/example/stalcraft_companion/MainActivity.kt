@@ -10,6 +10,7 @@ import com.example.stalcraft_companion.adapters.CategoryAdapter
 import com.example.stalcraft_companion.adapters.ItemListingAdapter
 import com.example.stalcraft_companion.api.schemas.CategoryGroup
 import com.example.stalcraft_companion.api.schemas.ListingItem
+import com.example.stalcraft_companion.api.schemas.SubcategoryGroup
 import com.example.stalcraft_companion.database.LocalDataSource
 import com.example.stalcraft_companion.database.RemoteDataSource
 import io.reactivex.Observable
@@ -48,13 +49,19 @@ class MainActivity : AppCompatActivity() {
     private val observer: DisposableObserver<List<ListingItem>>
         get() = object : DisposableObserver<List<ListingItem>>() {
             override fun onNext(t: List<ListingItem>) {
-                val groups = t.groupBy { it.data.substringBeforeLast('/') }
-                    .map { (category, items) ->
-                        CategoryGroup(category, items)
+                val categoryGroups = t.groupBy { it.data.substringBeforeLast('/').substringAfter('/').substringAfter('/').substringBeforeLast('/') }
+                    .map { (category, categoryItems) ->
+                        val subcategoryGroups = categoryItems.groupBy { it.data.substringBeforeLast('/').substringAfter('/').substringAfter('/') }
+                            .map { (subcategory, subcategoryItems) ->
+                                SubcategoryGroup(subcategory, subcategoryItems)
+                            }
+                            .sortedBy { it.subcategoryName }
+
+                        CategoryGroup(category, subcategoryGroups)
                     }
                     .sortedBy { it.categoryName }
 
-                adapter = CategoryAdapter(groups) { _ -> }
+                adapter = CategoryAdapter(categoryGroups) { _ -> }
                 mainRecyclerView.adapter = adapter
             }
 

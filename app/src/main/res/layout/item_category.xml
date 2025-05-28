@@ -17,7 +17,7 @@
 
     <ImageView
         android:id="@+id/ivIcon"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:src="@drawable/ic_arrow_down"/>
+        android:layout_width="34dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_arrow_down" />
 </LinearLayout>
