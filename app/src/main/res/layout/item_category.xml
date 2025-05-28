@@ -8,7 +8,7 @@
     android:background="?attr/selectableItemBackground">
 
     <TextView
-        android:id="@+id/categoryName"
+        android:id="@+id/tvTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -16,8 +16,8 @@
         android:textStyle="bold"/>
 
     <ImageView
-        android:id="@+id/expandIcon"
-        android:layout_width="49dp"
-        android:layout_height="42dp"
-        android:src="@drawable/ic_launcher_foreground" />
+        android:id="@+id/ivIcon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_arrow_down"/>
 </LinearLayout>

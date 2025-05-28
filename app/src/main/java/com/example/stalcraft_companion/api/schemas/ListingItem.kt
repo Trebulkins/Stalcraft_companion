@@ -33,6 +33,12 @@ data class StatusObject(
 
 data class CategoryGroup(
     val categoryName: String,
+    val subcategories: List<SubcategoryGroup>,
+    var isExpanded: Boolean = false
+)
+
+data class SubcategoryGroup(
+    val subcategoryName: String,
     val items: List<ListingItem>,
     var isExpanded: Boolean = false
 )

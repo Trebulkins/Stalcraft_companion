@@ -19,18 +19,27 @@ class CategoryAdapter(
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
-        private const val TYPE_HEADER = 0
-        private const val TYPE_ITEM = 1
+        private const val TYPE_CATEGORY = 0
+        private const val TYPE_SUBCATEGORY = 1
+        private const val TYPE_ITEM = 2
     }
 
     override fun getItemViewType(position: Int): Int {
-        var cumulativePos = 0
+        var pos = 0
         for (group in groups) {
-            if (position == cumulativePos) return TYPE_HEADER
-            cumulativePos++
+            if (position == pos) return TYPE_CATEGORY
+            pos++
+
             if (group.isExpanded) {
-                if (position < cumulativePos + group.items.size) return TYPE_ITEM
-                cumulativePos += group.items.size
+                for (subgroup in group.subcategories) {
+                    if (position == pos) return TYPE_SUBCATEGORY
+                    pos++
+
+                    if (subgroup.isExpanded) {
+                        if (position < pos + subgroup.items.size) return TYPE_ITEM
+                        pos += subgroup.items.size
+                    }
+                }
             }
         }
         throw IllegalArgumentException("Invalid position")
@@ -38,13 +47,17 @@ class CategoryAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            TYPE_HEADER -> CategoryHeaderViewHolder(
+            TYPE_CATEGORY -> CategoryViewHolder(
                 LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_category_header, parent, false)
+                    .inflate(R.layout.item_category, parent, false)
+            )
+            TYPE_SUBCATEGORY -> SubcategoryViewHolder(
+                LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_subcategory, parent, false)
             )
             TYPE_ITEM -> ListingItemViewHolder(
                 LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_layout, parent, false)
+                    .inflate(R.layout.item_listing, parent, false)
             )
             else -> throw IllegalArgumentException("Invalid view type")
         }
