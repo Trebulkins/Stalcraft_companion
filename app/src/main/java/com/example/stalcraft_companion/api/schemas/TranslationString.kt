@@ -26,11 +26,7 @@ data class TranslationString(
     @Expose
     var text: String? = null,
 
-    @SerializedName("key")
-    @Expose
-    var key: String? = null,
-
     @SerializedName("lines")
     @Expose
-    var lines: List<TranslationLines>? = null,
+    var lines: TranslationLines? = null,
 )

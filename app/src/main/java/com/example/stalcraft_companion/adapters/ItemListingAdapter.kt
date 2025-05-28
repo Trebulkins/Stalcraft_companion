@@ -22,15 +22,49 @@ class ItemListingAdapter(private var itemList: List<ListingItem>, private var co
     }
 
     override fun onBindViewHolder(holder: ItemDBHolder, pos: Int) {
-        holder.itemTitle.text = itemList[pos].name.toString()
-        holder.itemTitle.setTextColor(Color.parseColor(itemList[pos].color))
+        holder.itemTitle.text = itemList[pos].name.lines?.ru
         holder.itemCategory.text = itemList[pos].data.substringBeforeLast('/')
-        holder.itemRarity.setBackgroundColor(Color.parseColor(itemList[pos].color))
-        holder.itemState.text = "@string/${itemList[pos].status!!.state}"
-        when (itemList[pos].status!!.state) {
-            "PERSONAL_ON_USE" -> holder.itemStateImg.setImageResource(R.drawable.personal_on_use)
-            "NON_DROP" -> holder.itemStateImg.setImageResource(R.drawable.non_drop)
-            "PERSONAL_DROP_ON_GET" -> holder.itemStateImg.setImageResource(R.drawable.personal_drop_on_get)
+
+        when (itemList[pos].color) {
+            "DEFAULT" -> {
+                holder.itemRarity.setBackgroundColor(Color.parseColor("#808080"))
+                holder.itemTitle.setTextColor(Color.parseColor("#808080"))
+            }
+            "RANK_NEWBIE" -> {
+                holder.itemRarity.setBackgroundColor(Color.parseColor("#9ACD32"))
+                holder.itemTitle.setTextColor(Color.parseColor("#9ACD32"))
+            }
+            "RANK_STALKER" -> {
+                holder.itemRarity.setBackgroundColor(Color.parseColor("#1E90FF"))
+                holder.itemTitle.setTextColor(Color.parseColor("#1E90FF"))
+            }
+            "RANK_VETERAN" -> {
+                holder.itemRarity.setBackgroundColor(Color.parseColor("#BA55D3"))
+                holder.itemTitle.setTextColor(Color.parseColor("#BA55D3"))
+            }
+            "RANK_MASTER" -> {
+                holder.itemRarity.setBackgroundColor(Color.parseColor("#B22222"))
+                holder.itemTitle.setTextColor(Color.parseColor("#B22222"))
+            }
+            "RANK_LEGEND" -> {
+                holder.itemRarity.setBackgroundColor(Color.parseColor("#FFD700"))
+                holder.itemTitle.setTextColor(Color.parseColor("#FFD700"))
+            }
+        }
+
+        when (itemList[pos].status.state) {
+            "PERSONAL_ON_USE" -> {
+                holder.itemStateImg.setImageResource(R.drawable.personal_on_use)
+                holder.itemState.setText(R.string.PERSONAL_ON_USE)
+            }
+            "NON_DROP" -> {
+                holder.itemStateImg.setImageResource(R.drawable.non_drop)
+                holder.itemState.setText(R.string.NON_DROP)
+            }
+            "PERSONAL_DROP_ON_GET" -> {
+                holder.itemStateImg.setImageResource(R.drawable.personal_drop_on_get)
+                holder.itemState.setText(R.string.PERSONAL_DROP_ON_GET)
+            }
         }
 
         Picasso.get().load(RetrofitClient.DATABASE_URL.substringBeforeLast('/') + itemList[pos].icon).into(holder.itemIcon)

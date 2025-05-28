@@ -2,6 +2,7 @@ package com.example.stalcraft_companion.database
 
 import android.util.Log
 import com.example.stalcraft_companion.api.RetrofitClient
+import com.example.stalcraft_companion.api.schemas.Item
 import com.example.stalcraft_companion.api.schemas.ListingItem
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers

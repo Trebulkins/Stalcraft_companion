@@ -7,16 +7,12 @@ import com.example.stalcraft_companion.api.schemas.TranslationString
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-
-
 class TypeConverter {
   private val gson = Gson()
 
   // TranslationString
   @TypeConverter
-  fun translationStringToString(translationString: TranslationString): String {
-    return gson.toJson(translationString)
-  }
+  fun getRussianText(translationString: TranslationString) = translationString.lines?.ru
 
   @TypeConverter
   fun stringToTranslationString(json: String): TranslationString {
@@ -30,7 +26,7 @@ class TypeConverter {
   }
 
   @TypeConverter
-  fun stringToInfoBlocksList(json: String): InfoBlocksObject {
+  fun stringToInfoBlocksList(json: String): List<InfoBlocksObject> {
     val type = object : TypeToken<List<InfoBlocksObject>>() {}.type
     return gson.fromJson(json, type)
   }

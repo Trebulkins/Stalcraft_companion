@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Stalcraft_companion</string>
+
     <string name="PERSONAL_ON_USE">Персональный при использовании</string>
-    <string name="NON_DROP">Не выпадают после смерти</string>
+    <string name="NON_DROP">Не выпадает после смерти</string>
     <string name="PERSONAL_DROP_ON_GET">Персональное, падает при смерти</string>
 </resources>

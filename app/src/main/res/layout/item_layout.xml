@@ -15,7 +15,6 @@
             android:id="@+id/item_rarity_color"
             android:layout_width="10dp"
             android:layout_height="150dp"
-            android:background="@color/RANK_MASTER"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -31,12 +30,11 @@
 
         <TextView
             android:id="@+id/item_title"
-            android:layout_width="230dp"
-            android:layout_height="wrap_content"
+            android:layout_width="220dp"
+            android:layout_height="23dp"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="16dp"
             android:text="ОЦ-33 «Пернач»"
-            android:textColor="@color/RANK_MASTER"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -44,12 +42,11 @@
 
         <TextView
             android:id="@+id/item_category"
-            android:layout_width="230dp"
-            android:layout_height="wrap_content"
+            android:layout_width="220dp"
+            android:layout_height="19dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:text="Оружие / Пистолеты"
-            android:textColor="#80000000"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -60,43 +57,19 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="Персональный при использовании"
-            android:textColor="#80000000"
             android:textSize="10sp"
             app:layout_constraintStart_toEndOf="@+id/item_state_img"
             app:layout_constraintTop_toBottomOf="@+id/item_title" />
-
-        <TextView
-            android:id="@+id/item_weight"
-            android:layout_width="wrap_content"
-            android:layout_height="20dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="12dp"
-            android:text="1,15 кг"
-            android:textAlignment="textEnd"
-            android:textColor="#80000000"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
 
         <ImageView
             android:id="@+id/item_state_img"
             android:layout_width="14dp"
             android:layout_height="14dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="232dp"
+            android:layout_marginEnd="220dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/item_title"
             app:srcCompat="@drawable/personal_on_use" />
-
-        <ImageView
-            android:id="@+id/weight_icon"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginBottom="12dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/item_weight"
-            app:srcCompat="@drawable/outline_weight_24" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
