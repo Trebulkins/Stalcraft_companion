@@ -4,4 +4,45 @@
     <string name="PERSONAL_ON_USE">Персональный при использовании</string>
     <string name="NON_DROP">Не выпадает после смерти</string>
     <string name="PERSONAL_DROP_ON_GET">Персональное, падает при смерти</string>
+
+    <string name="armor">Костюмы</string>
+    <string name="clothes">Одежда</string>
+    <string name="combat">Боевые</string>
+    <string name="combined">Комбинированные</string>
+    <string name="device">Устройства</string>
+    <string name="scientist">Научные</string>
+
+    <string name="artefact">Артефакты</string>
+    <string name="biochemical">Биохимические</string>
+    <string name="electrophysical">Электрофизические</string>
+    <string name="gravity">Графитационные</string>
+    <string name="other_arts">Прочие</string>
+    <string name="thermal">Термические</string>
+
+    <string name="attachment">Обвесы</string>
+    <string name="accessory">Брелки</string>
+    <string name="barrel">Надульники и глушители</string>
+    <string name="collimator_sights">Прицелы</string>
+    <string name="forend">Цевья и крепления</string>
+    <string name="mag">Магазины</string>
+    <string name="other">Прочее</string>
+    <string name="pistol_handle">Пистолетные рукояти</string>
+
+    <string name="bullet">Патроны</string>
+    <string name="containers">Рюкзаки и контейнеры</string>
+    <string name="drink">Напитки</string>
+    <string name="food">Еда</string>
+    <string name="grenade">Гранаты</string>
+    <string name="medicine">Медикаменты</string>
+    <string name="skins">Скины</string>
+
+    <string name="weapon">Оружие</string>
+    <string name="assault_rifle">Автоматы</string>
+    <string name="heavy">Прочее вооружение</string>
+    <string name="machine_gun">Пулеметы</string>
+    <string name="melee">Ближний бой</string>
+    <string name="pistol">Пистолеты</string>
+    <string name="shotgun_rifle">Дробовики и ружья</string>
+    <string name="sniper_rifle">Снайперские винтовки</string>
+    <string name="submachine_gun">Пистолеты-пулеметы</string>
 </resources>

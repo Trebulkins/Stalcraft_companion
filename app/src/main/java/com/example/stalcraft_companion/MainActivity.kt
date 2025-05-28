@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     .sortedBy { it.categoryName }
 
-                adapter = CategoryAdapter(categoryGroups) { _ -> }
+                adapter = CategoryAdapter(this@MainActivity, categoryGroups) { _ -> }
                 mainRecyclerView.adapter = adapter
             }
 

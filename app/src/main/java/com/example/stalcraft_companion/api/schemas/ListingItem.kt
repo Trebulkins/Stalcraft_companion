@@ -24,9 +24,9 @@ data class ListingItem(
     @Expose
     var status: StatusObject
 ) {
-    val category: String get() = data.split('/')[2]
+    val category: String get() = if (data.split('/')[2] != "misc") data.split('/')[2] else "other"
     val hasSubcategory: Boolean get() = data.split('/').size > 4 // Есть подкатегория
-    val subcategory: String get() = if (hasSubcategory) data.split('/')[3] else ""
+    val subcategory: String get() = if (hasSubcategory && category != "other") data.split('/')[3] else ""
 }
 
 data class CategoryGroup(

@@ -1,12 +1,13 @@
 package com.example.stalcraft_companion.adapters
 
-import android.content.res.Resources
+import android.content.Context
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat.getString
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stalcraft_companion.R
 import com.example.stalcraft_companion.api.RetrofitClient
@@ -16,6 +17,7 @@ import com.example.stalcraft_companion.api.schemas.SubcategoryGroup
 import com.squareup.picasso.Picasso
 
 class CategoryAdapter(
+    val context: Context,
     private val groups: List<CategoryGroup>,
     private val onItemClick: (ListingItem) -> Unit
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -143,7 +145,7 @@ class CategoryAdapter(
         private val icon: ImageView = view.findViewById(R.id.ivIcon)
 
         fun bind(group: CategoryGroup) {
-            title.text = group.categoryName
+            title.text = getString(context, context.resources.getIdentifier(group.categoryName, "string", context.packageName))
             icon.rotation = if (group.isExpanded) 180f else 0f
         }
     }
@@ -153,7 +155,7 @@ class CategoryAdapter(
         private val icon: ImageView = view.findViewById(R.id.ivIcon)
 
         fun bind(subgroup: SubcategoryGroup) {
-            title.text = subgroup.subcategoryName
+            title.text = getString(context, context.resources.getIdentifier(subgroup.subcategoryName, "string", context.packageName))
             icon.rotation = if (subgroup.isExpanded) 180f else 0f
             itemView.setPadding(16, 0, 0, 0)
         }
@@ -162,7 +164,7 @@ class CategoryAdapter(
     inner class ListingItemViewHolder(view: View): RecyclerView.ViewHolder(view) {
         fun bind(item: ListingItem) {
             itemView.findViewById<TextView>(R.id.item_title).text = item.name.lines?.ru
-            itemView.findViewById<TextView>(R.id.item_category).text = item.data.substringBeforeLast('/').substringAfter('/').substringAfter('/')
+            itemView.findViewById<TextView>(R.id.item_category).text = "${item.category}/${item.subcategory}"
             itemView.setPadding(if (item.hasSubcategory) 32 else 16,0, 0, 0)
 
             when (item.color) {
