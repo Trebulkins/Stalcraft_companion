@@ -6,6 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.stalcraft_companion.api.schemas.Item
+import com.example.stalcraft_companion.api.schemas.ListingResponse
 
 @Database(entities = [Item::class], version = 1)
 @TypeConverters(TypeConverter::class)

@@ -5,10 +5,9 @@ import com.example.stalcraft_companion.api.schemas.Item
 import io.reactivex.Observable
 import kotlin.concurrent.thread
 
-
-open class LocalDataSource(application: Application) {
+class LocalDataSource(application: Application) {
   private val dao: ItemsDao
-  open val allItems: Observable<List<Item>>
+  private val allItems: Observable<List<Item>>
 
   init {
     val db = LocalDatabase.getInstance(application)

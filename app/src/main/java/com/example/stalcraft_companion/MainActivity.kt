@@ -2,7 +2,6 @@ package com.example.stalcraft_companion
 
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,7 +16,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
 
-private val TAG = "MainActivity"
+private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
     private lateinit var mainRecyclerView: RecyclerView
@@ -46,15 +45,13 @@ class MainActivity : AppCompatActivity() {
     private val itemsObservable: Observable<List<ListingResponse>> = dataSource.listingObservable()!!
     private val observer: DisposableObserver<List<ListingResponse>>
         get() = object : DisposableObserver<List<ListingResponse>>() {
-
-
             override fun onNext(t: List<ListingResponse>) {
                 adapter = ItemListingAdapter(t, this@MainActivity)
                 mainRecyclerView.adapter = adapter
             }
 
             override fun onError(e: Throwable) {
-                Log.d(TAG, "Error$e")
+                Log.d(TAG, "Error $e")
                 e.printStackTrace()
                 displayError("Error fetching items list")
             }

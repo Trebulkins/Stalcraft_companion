@@ -14,5 +14,5 @@ data class InfoBlocksObject(
 
     @SerializedName("text")
     @Expose
-    var text: String? = null,
+    var text: TranslationString? = null,
 )

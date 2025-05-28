@@ -10,7 +10,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stalcraft_companion.R
 import com.example.stalcraft_companion.api.RetrofitClient
-import com.example.stalcraft_companion.api.schemas.Item
 import com.example.stalcraft_companion.api.schemas.ListingResponse
 import com.squareup.picasso.Picasso
 
