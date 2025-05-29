@@ -1,5 +1,6 @@
 package com.example.stalcraft_companion.adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -16,6 +17,7 @@ import com.example.stalcraft_companion.api.schemas.ListingItem
 import com.example.stalcraft_companion.api.schemas.SubcategoryGroup
 import com.squareup.picasso.Picasso
 
+@SuppressLint("SetTextI18n")
 class CategoryAdapter(
     val context: Context,
     private val groups: List<CategoryGroup>,
@@ -164,7 +166,10 @@ class CategoryAdapter(
     inner class ListingItemViewHolder(view: View): RecyclerView.ViewHolder(view) {
         fun bind(item: ListingItem) {
             itemView.findViewById<TextView>(R.id.item_title).text = item.name.lines?.ru
-            itemView.findViewById<TextView>(R.id.item_category).text = "${item.category}/${item.subcategory}"
+            itemView.findViewById<TextView>(R.id.item_category).text =
+                getString(context, context.resources.getIdentifier(item.category, "string", context.packageName)) +
+                        if (item.subcategory != "") "/" + getString(context, context.resources.getIdentifier(item.subcategory, "string", context.packageName))
+                        else ""
             itemView.setPadding(if (item.hasSubcategory) 32 else 16,0, 0, 0)
 
             when (item.color) {
