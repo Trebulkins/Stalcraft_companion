@@ -1,9 +1,13 @@
 package com.example.stalcraft_companion.api.schemas
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
+@Entity(tableName = "listing")
 data class ListingItem(
+
     @SerializedName("data")
     @Expose
     var data: String,
@@ -22,7 +26,10 @@ data class ListingItem(
 
     @SerializedName("status")
     @Expose
-    var status: StatusObject
+    var status: StatusObject,
+
+    @PrimaryKey
+    var id: String = data.split('/')[data.split('/').lastIndex].removeSuffix(".json")
 ) {
     val category: String get() = if (data.split('/')[2] != "misc") data.split('/')[2] else "other"
     val hasSubcategory: Boolean get() = data.split('/').size > 4 // Есть подкатегория

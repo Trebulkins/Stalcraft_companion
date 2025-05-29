@@ -1,30 +1,29 @@
 package com.example.stalcraft_companion.database
 
-import android.app.Application
+import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
-import com.example.stalcraft_companion.api.schemas.Item
+import com.example.stalcraft_companion.api.schemas.ListingItem
 
-@Database(entities = [Item::class], version = 1)
-@TypeConverters(TypeConverter::class)
+@Database(entities = [ListingItem::class], version = 1)
 abstract class LocalDatabase : RoomDatabase() {
-  abstract fun itemsDao(): ItemsDao
+  abstract fun listingDao(): ListingDao
 
   companion object {
-    private val lock = Any()
-    private const val DB_NAME = "items_database"
+    @Volatile
     private var INSTANCE: LocalDatabase? = null
-    fun getInstance(application: Application): LocalDatabase {
-      synchronized(lock) {
-        if (INSTANCE == null) {
-          INSTANCE = Room.databaseBuilder(application, LocalDatabase::class.java, DB_NAME)
-            .allowMainThreadQueries()
-            .build()
-        }
+
+    fun getDatabase(context: Context): LocalDatabase {
+      return INSTANCE ?: synchronized(this) {
+        val instance = Room.databaseBuilder(
+          context.applicationContext,
+          LocalDatabase::class.java,
+          "listing_database"
+        ).build()
+        INSTANCE = instance
+        instance
       }
-      return INSTANCE!!
     }
   }
 }

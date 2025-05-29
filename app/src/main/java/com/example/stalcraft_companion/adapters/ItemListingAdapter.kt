@@ -170,7 +170,7 @@ class ItemListingAdapter(
                 getString(context, context.resources.getIdentifier(item.category, "string", context.packageName)) +
                         if (item.subcategory != "") "/" + getString(context, context.resources.getIdentifier(item.subcategory, "string", context.packageName))
                         else ""
-            itemView.setPadding(if (item.hasSubcategory) 32 else 16,0, 0, 0)
+            itemView.setPadding(if (item.hasSubcategory) 32 else 16,0,0,0)
 
             when (item.color) {
                 "DEFAULT" -> {
