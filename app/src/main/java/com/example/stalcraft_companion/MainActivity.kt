@@ -1,12 +1,12 @@
 package com.example.stalcraft_companion
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.stalcraft_companion.adapters.CategoryAdapter
 import com.example.stalcraft_companion.adapters.ItemListingAdapter
 import com.example.stalcraft_companion.api.schemas.CategoryGroup
 import com.example.stalcraft_companion.api.schemas.ListingItem
@@ -24,7 +24,7 @@ private const val TAG = "MainActivity"
 class MainActivity : AppCompatActivity() {
     private lateinit var mainRecyclerView: RecyclerView
     private lateinit var localDataSource: LocalDataSource
-    private lateinit var adapter: CategoryAdapter
+    private lateinit var adapter: ItemListingAdapter
     private val dataSource = RemoteDataSource()
     private val compositeDisposable = CompositeDisposable()
 
@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     .sortedBy { it.categoryName }
 
-                adapter = CategoryAdapter(this@MainActivity, categoryGroups) { _ -> }
+                adapter = ItemListingAdapter(this@MainActivity, categoryGroups) { item -> showItemDetails(item) }
                 mainRecyclerView.adapter = adapter
             }
 
@@ -87,6 +87,14 @@ class MainActivity : AppCompatActivity() {
                 Log.d(TAG, "Completed")
             }
         }
+
+    private fun showItemDetails(item: ListingItem) {
+        // Показать детали элемента
+        val intent = Intent(this, DetailsActivity::class.java).apply {
+            putExtra("ITEM_DATA", item.data)
+        }
+        startActivity(intent)
+    }
 
     private fun getItemsListing() {
         val itemsDisposable = itemsObservable
