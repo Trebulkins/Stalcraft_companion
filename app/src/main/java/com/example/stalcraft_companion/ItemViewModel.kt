@@ -4,10 +4,12 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.stalcraft_companion.api.ApiClient
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.stalcraft_companion.api.schemas.Item
 import com.example.stalcraft_companion.database.ItemRepository
 import com.example.stalcraft_companion.database.LocalDatabase
+import kotlinx.coroutines.launch
 
 class ItemViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: ItemRepository

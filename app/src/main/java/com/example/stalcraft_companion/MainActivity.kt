@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnItemSelectedListener {
             .commit()
     }
 
-    fun onItemSelected(itemId: String) {
+    override fun onItemSelected(itemId: String) {
         if (isLandscape) {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.detail_fragment_container, DetailFragment.newInstance(itemId))

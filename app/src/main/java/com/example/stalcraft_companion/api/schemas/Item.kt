@@ -14,15 +14,15 @@ data class Item (
 
     @SerializedName("category")
     @Expose
-    var category: String? = null,
+    var category: String,
 
     @SerializedName("name")
     @Expose
-    var name: TranslationString? = null,
+    var name: TranslationString,
 
     @SerializedName("color")
     @Expose
-    var color: String? = "DEFAULT",
+    var color: String = "DEFAULT",
 
     @SerializedName("status")
     @Expose
@@ -31,4 +31,6 @@ data class Item (
     @SerializedName("infoBlocks")
     @Expose
     var infoBlocks: List<InfoBlocksObject>? = null,
-)
+) {
+    val subcategory: String get() = category.substringAfter('/', missingDelimiterValue = "")
+}

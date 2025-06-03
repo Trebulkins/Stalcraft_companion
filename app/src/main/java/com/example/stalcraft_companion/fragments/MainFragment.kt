@@ -17,7 +17,7 @@ import com.example.stalcraft_companion.api.schemas.SubcategoryGroup
 private const val TAG = "MainFragment"
 class MainFragment : Fragment() {
     interface OnItemSelectedListener {
-        fun onItemSelected(itemId: Int)
+        fun onItemSelected(itemId: String)
     }
 
     private var listener: OnItemSelectedListener? = null
@@ -51,7 +51,7 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val items = arguments?.getParcelableArrayList<Item>(ARG_ITEMS) ?: return
-        val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
+        val recyclerView = view.findViewById<RecyclerView>(R.id.item_infoBlocks)
         recyclerView.layoutManager = LinearLayoutManager(context)
 
         val categoryGroups = prepareCategoryGroups(items)

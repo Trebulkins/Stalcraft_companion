@@ -19,9 +19,8 @@ import com.squareup.picasso.Picasso
 
 @SuppressLint("SetTextI18n")
 class ItemListingAdapter(
-    val context: Context,
     private val groups: List<CategoryGroup>,
-    private val onItemClick: (ListingItem) -> Unit
+    private val onItemClick: (String) -> Unit
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -147,7 +146,6 @@ class ItemListingAdapter(
         private val icon: ImageView = view.findViewById(R.id.ivIcon)
 
         fun bind(group: CategoryGroup) {
-            title.text = getString(context, context.resources.getIdentifier(group.categoryName, "string", context.packageName))
             icon.rotation = if (group.isExpanded) 180f else 0f
         }
     }
@@ -157,7 +155,6 @@ class ItemListingAdapter(
         private val icon: ImageView = view.findViewById(R.id.ivIcon)
 
         fun bind(subgroup: SubcategoryGroup) {
-            title.text = getString(context, context.resources.getIdentifier(subgroup.subcategoryName, "string", context.packageName))
             icon.rotation = if (subgroup.isExpanded) 180f else 0f
             itemView.setPadding(16, 0, 0, 0)
         }
@@ -166,10 +163,7 @@ class ItemListingAdapter(
     inner class ListingItemViewHolder(view: View): RecyclerView.ViewHolder(view) {
         fun bind(item: ListingItem) {
             itemView.findViewById<TextView>(R.id.item_title).text = item.name.lines?.ru
-            itemView.findViewById<TextView>(R.id.item_category).text =
-                getString(context, context.resources.getIdentifier(item.category, "string", context.packageName)) +
-                        if (item.subcategory != "") "/" + getString(context, context.resources.getIdentifier(item.subcategory, "string", context.packageName))
-                        else ""
+            itemView.findViewById<TextView>(R.id.item_category).text = item.category
             itemView.setPadding(if (item.hasSubcategory) 32 else 16,0,0,0)
 
             when (item.color) {

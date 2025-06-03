@@ -2,6 +2,9 @@ package com.example.stalcraft_companion.database
 
 import com.example.stalcraft_companion.api.ApiClient
 import com.example.stalcraft_companion.api.schemas.Item
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.Flow
 
 class ItemRepository(private val itemDao: ItemDao) {
@@ -15,7 +18,7 @@ class ItemRepository(private val itemDao: ItemDao) {
 
             // Параллельная загрузка всех items
             val items = itemListings.map { listing ->
-                async {
+                GlobalScope.async {
                     try {
                         apiService.getItem(listing.data)
                     } catch (e: Exception) {

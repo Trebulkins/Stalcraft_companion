@@ -23,10 +23,10 @@ class DetailFragment : Fragment() {
     companion object {
         private const val ARG_ITEM_ID = "item_id"
 
-        fun newInstance(itemId: Int?): DetailFragment {
+        fun newInstance(itemId: String?): DetailFragment {
             return DetailFragment().apply {
                 arguments = Bundle().apply {
-                    putInt(ARG_ITEM_ID, itemId ?: -1)
+                    putString(ARG_ITEM_ID, itemId)
                 }
             }
         }
@@ -45,9 +45,9 @@ class DetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val itemId = arguments?.getInt(ARG_ITEM_ID, -1) ?: -1
+        val itemId = arguments?.getString(ARG_ITEM_ID, null)
 
-        if (itemId != -1) {
+        if (!itemId.isNullOrEmpty()) {
             loadItemDetails(itemId)
         } else {
             showPlaceholder()

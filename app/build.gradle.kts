@@ -47,6 +47,10 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.google.gson)
+    implementation(libs.lifecycle.extensions)
+    implementation(libs.androidx.fragment.ktx)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
 
     // Room components
     implementation(libs.androidx.room.runtime)
