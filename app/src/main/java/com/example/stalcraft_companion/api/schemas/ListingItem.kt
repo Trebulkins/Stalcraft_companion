@@ -26,11 +26,9 @@ data class ListingItem(
 
     @SerializedName("status")
     @Expose
-    var status: StatusObject,
-
-    @PrimaryKey
-    var id: String = data.split('/')[data.split('/').lastIndex].removeSuffix(".json")
+    var status: StatusObject
 ) {
+    val id: String get() = data.split('/')[data.split('/').lastIndex].removeSuffix(".json")
     val category: String get() = if (data.split('/')[2] != "misc") data.split('/')[2] else "other"
     val hasSubcategory: Boolean get() = data.split('/').size > 4 // Есть подкатегория
     val subcategory: String get() = if (hasSubcategory && category != "other") data.split('/')[3] else ""

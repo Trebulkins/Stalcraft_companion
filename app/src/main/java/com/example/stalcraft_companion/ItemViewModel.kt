@@ -4,18 +4,19 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.stalcraft_companion.api.ApiClient
 import com.example.stalcraft_companion.api.schemas.Item
 import com.example.stalcraft_companion.database.ItemRepository
 import com.example.stalcraft_companion.database.LocalDatabase
 
 class ItemViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: ItemRepository
-    private val allItems: LiveData<List<Item>>
-    private val isLoading = MutableLiveData(false)
-    private val errorMessage = MutableLiveData<String?>()
+    val allItems: LiveData<List<Item>>
+    val isLoading = MutableLiveData(false)
+    val errorMessage = MutableLiveData<String?>()
 
     init {
-        val dao = LocalDatabase.getDatabase(application).itemsDao()
+        val dao = LocalDatabase.getDatabase(application).itemDao()
         repository = ItemRepository(dao)
         allItems = repository.allItems.asLiveData()
     }
@@ -25,12 +26,16 @@ class ItemViewModel(application: Application) : AndroidViewModel(application) {
             isLoading.postValue(true)
             errorMessage.postValue(null)
             try {
-                repository.refreshData(ApiClient.instance)
+                repository.refreshData()
             } catch (e: Exception) {
-                errorMessage.postValue("Failed to load data: ${e.message}")
+                errorMessage.postValue("Ошибка загрузки: ${e.message}")
             } finally {
                 isLoading.postValue(false)
             }
         }
+    }
+
+    suspend fun getItemById(itemId: String): Item? {
+        return repository.getItemById(itemId)
     }
 }

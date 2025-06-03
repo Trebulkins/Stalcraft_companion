@@ -11,7 +11,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat.getString
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stalcraft_companion.R
-import com.example.stalcraft_companion.api.RetrofitClient
+import com.example.stalcraft_companion.api.ApiClient
 import com.example.stalcraft_companion.api.schemas.CategoryGroup
 import com.example.stalcraft_companion.api.schemas.ListingItem
 import com.example.stalcraft_companion.api.schemas.SubcategoryGroup
@@ -214,7 +214,7 @@ class ItemListingAdapter(
                 }
             }
 
-            Picasso.get().load(RetrofitClient.DATABASE_URL.substringBeforeLast('/') + item.icon).into(itemView.findViewById<ImageView>(R.id.item_icon))
+            Picasso.get().load(ApiClient.BASE_URL.substringBeforeLast('/') + item.icon).into(itemView.findViewById<ImageView>(R.id.item_icon))
         }
     }
 }

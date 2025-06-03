@@ -4,11 +4,11 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.stalcraft_companion.api.schemas.ListingItem
+import com.example.stalcraft_companion.api.schemas.Item
 
-@Database(entities = [ListingItem::class], version = 1)
+@Database(entities = [Item::class], version = 1)
 abstract class LocalDatabase : RoomDatabase() {
-  abstract fun listingDao(): ListingDao
+  abstract fun itemDao(): ItemDao
 
   companion object {
     @Volatile
@@ -19,7 +19,7 @@ abstract class LocalDatabase : RoomDatabase() {
         val instance = Room.databaseBuilder(
           context.applicationContext,
           LocalDatabase::class.java,
-          "listing_database"
+          "items_database"
         ).build()
         INSTANCE = instance
         instance
