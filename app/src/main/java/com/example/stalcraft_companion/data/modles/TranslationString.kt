@@ -1,6 +1,7 @@
 package com.example.stalcraft_companion.data.modles
 
 import android.os.Parcelable
+import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

@@ -5,40 +5,45 @@ import com.example.stalcraft_companion.data.modles.InfoBlock
 import com.example.stalcraft_companion.data.modles.StatusObject
 import com.example.stalcraft_companion.data.modles.TranslationString
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 
 class TypeConverter {
-  private val gson = Gson()
+  private val gson: Gson by lazy {
+    GsonBuilder()
+      .registerTypeAdapter(TranslationString::class.java, TranslationStringAdapter())
+      .registerTypeAdapter(InfoBlock::class.java, InfoBlocksObjectAdapter())
+      .create()
+  }
 
   @TypeConverter
-  fun translationStringToJson(value: TranslationString): String {
+  fun fromTranslationString(value: TranslationString): String {
     return gson.toJson(value)
   }
 
   @TypeConverter
-  fun jsonToTranslationString(value: String): TranslationString {
+  fun toTranslationString(value: String): TranslationString {
     return gson.fromJson(value, TranslationString::class.java)
   }
 
   @TypeConverter
-  fun infoBlocksListToJson(value: List<InfoBlock>): String {
+  fun fromInfoBlocksList(value: List<InfoBlock>): String {
     return gson.toJson(value)
   }
 
   @TypeConverter
-  fun jsonToInfoBlocksList(value: String): List<InfoBlock> {
+  fun toInfoBlocksList(value: String): List<InfoBlock> {
     val type = object : TypeToken<List<InfoBlock>>() {}.type
     return gson.fromJson(value, type) ?: emptyList()
   }
 
   @TypeConverter
-  fun statusToJson(value: StatusObject): String {
-    return gson.toJson(value)
+  fun toStatusObject(value: String): StatusObject {
+    return gson.fromJson(value, StatusObject::class.java)
   }
 
   @TypeConverter
-  fun jsonToStatus(value: String): StatusObject {
-    val type = object : TypeToken<List<InfoBlock>>() {}.type
-    return gson.fromJson(value, type)
+  fun fromStatusObject(value: StatusObject): String {
+    return gson.toJson(value)
   }
 }

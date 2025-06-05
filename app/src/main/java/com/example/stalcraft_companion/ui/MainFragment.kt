@@ -15,6 +15,7 @@ import com.example.stalcraft_companion.data.modles.CategoryGroup
 import com.example.stalcraft_companion.data.modles.Item
 import com.example.stalcraft_companion.data.modles.SubcategoryGroup
 import com.example.stalcraft_companion.databinding.FragmentMainBinding
+import com.google.android.material.snackbar.Snackbar
 
 class MainFragment : Fragment() {
     interface OnItemSelectedListener {
@@ -43,24 +44,37 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(requireActivity()).get(ItemViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity())[ItemViewModel::class.java]
         adapter = CategoryAdapter { item -> listener?.onItemSelected(item) }
 
         binding.mainRecyclerView.apply {
-            var layoutManager = LinearLayoutManager(context)
+            layoutManager = LinearLayoutManager(context)
             adapter = this@MainFragment.adapter
         }
 
-        viewModel.items.observe(viewLifecycleOwner) { items ->
-            val categories = items.groupBy { it.category }.map { (category, items) ->
-                CategoryGroup(
-                    categoryName = category,
-                    subcategories = items.groupBy { it.subcategory }.map { (subcategory, items) ->
-                        SubcategoryGroup(subcategory, items)
-                    }
-                )
+        // Наблюдаем за состояниями
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        }
+
+        viewModel.error.observe(viewLifecycleOwner) { error ->
+            error?.let {
+                Snackbar.make(binding.root, it, Snackbar.LENGTH_LONG).show()
             }
-            adapter.submitList(categories)
+        }
+
+        viewModel.items.observe(viewLifecycleOwner) { items ->
+            if (items.isNotEmpty()) {
+                val categories = items.groupBy { it.category }.map { (category, items) ->
+                    CategoryGroup(
+                        categoryName = category,
+                        subcategories = items.groupBy { it.subcategory }.map { (subcategory, items) ->
+                            SubcategoryGroup(subcategory, items)
+                        }
+                    )
+                }
+                adapter.submitList(categories)
+            }
         }
     }
 

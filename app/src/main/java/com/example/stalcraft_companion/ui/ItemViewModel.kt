@@ -11,6 +11,7 @@ import com.example.stalcraft_companion.data.ApiService
 import com.example.stalcraft_companion.data.AppDatabase
 import com.example.stalcraft_companion.data.modles.Item
 import com.example.stalcraft_companion.data.ItemRepository
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class ItemViewModel(application: Application) : AndroidViewModel(application) {
@@ -18,21 +19,25 @@ class ItemViewModel(application: Application) : AndroidViewModel(application) {
     val items: LiveData<List<Item>>
     val isLoading = MutableLiveData(false)
     val error = MutableLiveData<String?>()
+    val isEmpty = MutableLiveData<Boolean>()
 
     init {
         val dao = AppDatabase.getInstance(application).itemDao()
         repository = ItemRepository(dao)
-        items = repository.getAllItems().asLiveData()
+        items = repository.getAllItems().map { items ->
+            isEmpty.postValue(items.isEmpty())
+            items
+        }.asLiveData()
     }
 
     fun refreshData(apiService: ApiService) {
+        isLoading.value = true
         viewModelScope.launch {
-            isLoading.value = true
-            error.value = null
             try {
                 repository.refreshData(apiService)
+                error.value = null
             } catch (e: Exception) {
-                error.value = e.message
+                error.value = "Ошибка загрузки: ${e.message}"
             } finally {
                 isLoading.value = false
             }

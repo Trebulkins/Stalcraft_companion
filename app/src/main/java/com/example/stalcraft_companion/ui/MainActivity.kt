@@ -2,12 +2,13 @@ package com.example.stalcraft_companion.ui
 
 import android.content.res.Configuration
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.stalcraft_companion.R
+import com.example.stalcraft_companion.data.ApiClient
 import com.example.stalcraft_companion.data.modles.Item
 import com.example.stalcraft_companion.databinding.ActivityMainBinding
+import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity(), MainFragment.OnItemSelectedListener {
     private lateinit var binding: ActivityMainBinding
@@ -20,7 +21,10 @@ class MainActivity : AppCompatActivity(), MainFragment.OnItemSelectedListener {
         setContentView(binding.root)
 
         isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-        viewModel = ViewModelProvider(this).get(ItemViewModel::class.java)
+        viewModel = ViewModelProvider(this)[ItemViewModel::class.java]
+
+        // Загрузка данных при старте
+        loadInitialData()
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
@@ -45,6 +49,18 @@ class MainActivity : AppCompatActivity(), MainFragment.OnItemSelectedListener {
                 .replace(R.id.main_container, DetailsFragment.newInstance(item.id))
                 .addToBackStack(null)
                 .commit()
+        }
+    }
+
+    private fun loadInitialData() {
+        if (NetworkUtils.isNetworkAvailable(this)) {
+            viewModel.items.observe(this) { items ->
+                if (items.isEmpty()) {
+                    viewModel.refreshData(ApiClient.instance)
+                }
+            }
+        } else {
+            Snackbar.make(binding.root, "Нет интернет-соединения", Snackbar.LENGTH_LONG).show()
         }
     }
 }

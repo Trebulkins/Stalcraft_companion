@@ -19,39 +19,39 @@ class CategoryAdapter(
 ) : ListAdapter<CategoryGroup, RecyclerView.ViewHolder>(CategoryDiffCallback()) {
 
     sealed class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        class Category(val binding: ItemCategoryBinding) : ViewHolder(binding.root)
-        class Subcategory(val binding: ItemSubcategoryBinding) : ViewHolder(binding.root)
-        class Item(val binding: ItemLayoutBinding) : ViewHolder(binding.root)
+        class Cat(val binding: ItemCategoryBinding) : ViewHolder(binding.root)
+        class Subcat(val binding: ItemSubcategoryBinding) : ViewHolder(binding.root)
+        class I(val binding: ItemLayoutBinding) : ViewHolder(binding.root)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return when (viewType) {
-            TYPE_CATEGORY -> ViewHolder.Category(
+            TYPE_CATEGORY -> ViewHolder.Cat(
                 ItemCategoryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-            TYPE_SUBCATEGORY -> ViewHolder.Subcategory(
+            TYPE_SUBCATEGORY -> ViewHolder.Subcat(
                 ItemSubcategoryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-            else -> ViewHolder.Item(
+            else -> ViewHolder.I(
                 ItemLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is ViewHolder.Category -> bindCategory(holder, getItem(position))
-            is ViewHolder.Subcategory -> bindSubcategory(holder, getItem(position))
-            is ViewHolder.Item -> bindItem(holder, getItem(position))
+            is ViewHolder.Cat -> bindCategory(holder, getItem(position))
+            is ViewHolder.Subcat -> bindSubcategory(holder, getItem(position))
+            is ViewHolder.I -> bindItem(holder, getItem(position))
         }
     }
 
-    private fun bindCategory(holder: ViewHolder.Category, group: CategoryGroup) {
+    private fun bindCategory(holder: ViewHolder.Cat, group: CategoryGroup) {
         holder.binding.tvTitle.text = group.categoryName
     }
 
-    private fun bindSubcategory(holder: ViewHolder.Subcategory, group: CategoryGroup) {
+    private fun bindSubcategory(holder: ViewHolder.Subcat, group: CategoryGroup) {
         holder.binding.tvTitle.text = group.subcategories.first().subcategoryName
     }
 
-    private fun bindItem(holder: ViewHolder.Item, group: CategoryGroup) {
+    private fun bindItem(holder: ViewHolder.I, group: CategoryGroup) {
         val item = group.subcategories.first().items.first()
         holder.binding.apply {
             itemTitle.text = when (val name = item.name) {

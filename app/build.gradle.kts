@@ -34,6 +34,7 @@ android {
     packagingOptions {
         exclude("META-INF/INDEX.LIST")
         exclude("META-INF/DEPENDENCIES")
+        exclude("META-INF/io.netty.versions.properties")
     }
 
     compileOptions {

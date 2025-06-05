@@ -19,3 +19,11 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Для Gson
+-keep class com.example.stalcraft_companion.data.modles.** { *; }
+-keepclassmembers class com.example.stalcraft_companion.data.modles.** { *; }
+
+# Для sealed классов
+-keep class com.example.stalcraft_companion.data.modles.TranslationString { *; }
+-keep class com.example.stalcraft_companion.data.modles.InfoBlock { *; }
