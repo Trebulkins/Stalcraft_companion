@@ -1,12 +1,12 @@
-package com.example.stalcraft_companion.database
+package com.example.stalcraft_companion.data
 
 import androidx.room.TypeConverter
-import com.example.stalcraft_companion.api.schemas.InfoBlock
-import com.example.stalcraft_companion.api.schemas.StatusObject
-import com.example.stalcraft_companion.api.schemas.TranslationString
+import com.example.stalcraft_companion.data.modles.FormattedObject
+import com.example.stalcraft_companion.data.modles.InfoBlock
+import com.example.stalcraft_companion.data.modles.StatusObject
+import com.example.stalcraft_companion.data.modles.TranslationString
 import com.google.gson.Gson
 import org.json.JSONArray
-import org.json.JSONObject
 
 class TypeConverter {
   private val gson = Gson()
@@ -20,6 +20,11 @@ class TypeConverter {
       is TranslationString.Text ->
         """{"type":"text","text":"${value.text}"}"""
     }
+  }
+
+  @TypeConverter
+  fun fromFormattedObject(value: FormattedObject): String {
+    return """{"value":{"ru":${value.value.ru},"eu":${value.value.eu},"es":${value.value.es}}}"""
   }
 
   @TypeConverter
@@ -37,7 +42,7 @@ class TypeConverter {
             "type":"text",
             "title":${fromTranslationString(block.title)},
             "text":${fromTranslationString(block.text)}
-            }""".trimIndent()
+            }""".trimMargin()
         is InfoBlock.DamageBlock ->
           """{
             "type":"damage",
@@ -46,25 +51,46 @@ class TypeConverter {
             "endDamage":${block.endDamage},
             "damageDecreaseEnd":${block.damageDecreaseEnd},
             "maxDistance":${block.maxDistance},
-            }""".trimIndent()
+            }""".trimMargin()
         is InfoBlock.KeyValueBlock ->
           """{
             "type":"key-value",
             "key":${fromTranslationString(block.key)},
             "value":${fromTranslationString(block.value)}
-            }""".trimIndent()
+            }""".trimMargin()
         is InfoBlock.ListBlock ->
-          TODO()
+          """{
+            "type":"list",
+            "title":${fromTranslationString(block.title)},
+            "elements":${fromInfoBlocksList(block.elements)}
+            }""".trimMargin()
         is InfoBlock.NumericBlock ->
-          TODO()
+          """{
+            "type":"numeric",
+            "name":${fromTranslationString(block.name)},
+            "value":${block.value},
+            "formatted":${fromFormattedObject(block.formatted)}
+            }""".trimMargin()
+        is InfoBlock.RangeBlock ->
+          """{
+            |"type":"range",
+            |"name":${fromTranslationString(block.name)},
+            |"min":${block.min},
+            |"max":${block.max}
+            |}""".trimMargin()
       }
     })
   }
 
   @TypeConverter
   fun toInfoBlocksList(value: String): List<InfoBlock> {
-    return JSONArray(value).map { json: JSONObject ->
-      InfoBlock.fromJson(json.toString())
+    return try {
+      val jsonArray = JSONArray(value)
+      List(jsonArray.length()) { index ->
+        InfoBlock.fromJson(jsonArray.getJSONObject(index).toString())
+      }
+    } catch (e: Exception) {
+      emptyList()
     }
   }
 

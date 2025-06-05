@@ -1,7 +1,8 @@
-package com.example.stalcraft_companion.api.schemas
+package com.example.stalcraft_companion.data.modles
 
 import android.os.Parcelable
 import com.google.gson.Gson
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 import org.json.JSONObject
@@ -9,12 +10,12 @@ import org.json.JSONObject
 sealed class TranslationString : Parcelable {
     @Parcelize
     data class Translation(
-        val lines: TranslationLines
+        @Expose @SerializedName("lines") val lines: TranslationLines
     ) : TranslationString()
 
     @Parcelize
     data class Text(
-        val text: String
+        @Expose @SerializedName("text") val text: String
     ) : TranslationString()
 
     companion object {
@@ -31,12 +32,12 @@ sealed class TranslationString : Parcelable {
 
 @Parcelize
 data class TranslationLines(
-    @SerializedName("ru") val ru: String? = null,
-    @SerializedName("eu") val eu: String? = null,
-    @SerializedName("es") val es: String? = null
+    @Expose @SerializedName("ru") val ru: String? = null,
+    @Expose @SerializedName("eu") val eu: String? = null,
+    @Expose @SerializedName("es") val es: String? = null
 ) : Parcelable
 
 @Parcelize
 data class FormattedObject(
-    @SerializedName("value") val value: TranslationLines
+    @Expose @SerializedName("value") val value: TranslationLines
 ) : Parcelable

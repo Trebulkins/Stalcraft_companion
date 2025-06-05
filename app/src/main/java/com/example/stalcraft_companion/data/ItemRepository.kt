@@ -1,7 +1,6 @@
-package com.example.stalcraft_companion.database
+package com.example.stalcraft_companion.data
 
-import com.example.stalcraft_companion.api.ApiClient
-import com.example.stalcraft_companion.api.schemas.Item
+import com.example.stalcraft_companion.data.modles.Item
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll

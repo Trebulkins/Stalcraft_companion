@@ -1,7 +1,7 @@
-package com.example.stalcraft_companion.api
+package com.example.stalcraft_companion.data
 
-import com.example.stalcraft_companion.api.schemas.Item
-import com.example.stalcraft_companion.api.schemas.ListingItem
+import com.example.stalcraft_companion.data.modles.Item
+import com.example.stalcraft_companion.data.modles.ListingItem
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET

@@ -1,7 +1,6 @@
-package com.example.stalcraft_companion.api.schemas
+package com.example.stalcraft_companion.data.modles
 
 import androidx.room.Entity
-import androidx.room.PrimaryKey
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -37,7 +36,7 @@ data class CategoryGroup(
     val categoryName: String,
     val subcategories: List<SubcategoryGroup>,
     var isExpanded: Boolean = false,
-    val itemIds: List<String>  // Изменено на List<String>
+    val itemIds: List<String>
 ) {
     fun hasSubcategories(): Boolean = subcategories.any { it.subcategoryName.isNotEmpty() }
 }
@@ -45,5 +44,5 @@ data class CategoryGroup(
 data class SubcategoryGroup(
     val subcategoryName: String,
     var isExpanded: Boolean = false,
-    val itemIds: List<String>  // Изменено на List<String>
+    val itemIds: List<String>
 )

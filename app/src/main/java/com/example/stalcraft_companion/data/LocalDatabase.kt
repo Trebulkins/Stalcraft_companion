@@ -1,11 +1,11 @@
-package com.example.stalcraft_companion.database
+package com.example.stalcraft_companion.data
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.example.stalcraft_companion.api.schemas.Item
+import com.example.stalcraft_companion.data.modles.Item
 
 @Database(entities = [Item::class], version = 1)
 @TypeConverters(TypeConverters::class)

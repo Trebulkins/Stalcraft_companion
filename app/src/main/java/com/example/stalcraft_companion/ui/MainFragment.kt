@@ -1,4 +1,4 @@
-package com.example.stalcraft_companion.fragments
+package com.example.stalcraft_companion.ui
 
 import android.content.Context
 import android.os.Bundle
@@ -9,10 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stalcraft_companion.R
-import com.example.stalcraft_companion.adapters.ItemListingAdapter
-import com.example.stalcraft_companion.api.schemas.CategoryGroup
-import com.example.stalcraft_companion.api.schemas.Item
-import com.example.stalcraft_companion.api.schemas.SubcategoryGroup
+import com.example.stalcraft_companion.data.modles.CategoryGroup
+import com.example.stalcraft_companion.data.modles.Item
+import com.example.stalcraft_companion.data.modles.SubcategoryGroup
 
 private const val TAG = "MainFragment"
 class MainFragment : Fragment() {
@@ -55,7 +54,7 @@ class MainFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(context)
 
         val categoryGroups = prepareCategoryGroups(items)
-        val adapter = ItemListingAdapter(categoryGroups) { itemId ->
+        val adapter = CategoryAdapter(categoryGroups) { itemId ->
             listener?.onItemSelected(itemId)
         }
 
@@ -65,13 +64,13 @@ class MainFragment : Fragment() {
     private fun prepareCategoryGroups(items: List<Item>): List<CategoryGroup> {
         return items.groupBy { it.category }
             .map { (category, categoryItems) ->
-                val (withSubcat, withoutSubcat) = categoryItems.partition { it.subcategory.isNotEmpty() }
+                val (withSubcategory, withoutSubcategory) = categoryItems.partition { it.subcategory.isNotEmpty() }
 
                 CategoryGroup(
                     categoryName = category,
-                    subcategories = withSubcat.groupBy { it.subcategory }
-                        .map { (subcat, items) -> SubcategoryGroup(subcat, items.map { it.id }) },
-                    itemIds = withoutSubcat.map { it.id }
+                    subcategories = withSubcategory.groupBy { it.subcategory }
+                        .map { (subcategory, items) -> SubcategoryGroup(subcategory, false, items.map { it.id }) },
+                    itemIds = withoutSubcategory.map { it.id }
                 )
             }
             .sortedBy { it.categoryName }
