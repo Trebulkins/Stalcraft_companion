@@ -5,19 +5,29 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import io.reactivex.Observable
 import kotlinx.parcelize.Parcelize
 
 @Entity(tableName = "items")
 @Parcelize
 data class Item (
     @Expose @SerializedName("id") @PrimaryKey var id: String,
-    @Expose @SerializedName("category") var category: String,
     @Expose @SerializedName("name") var name: TranslationString,
+    @Expose @SerializedName("category") var category: String,
     @Expose @SerializedName("color") var color: String = "DEFAULT",
     @Expose @SerializedName("status") var status: StatusObject,
     @Expose @SerializedName("infoBlocks") var infoBlocks: List<InfoBlock>? = null,
 ): Parcelable {
-    val subcategory: String get() = category.substringAfter('/', missingDelimiterValue = "")
+    val subcategory get() = category.substringAfter('/', missingDelimiterValue = "")
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        other as Item
+        return id == other.id
+    }
+
+    override fun hashCode(): Int = id.hashCode()
 }
 
 @Parcelize

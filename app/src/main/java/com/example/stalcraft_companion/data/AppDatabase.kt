@@ -8,23 +8,20 @@ import androidx.room.TypeConverters
 import com.example.stalcraft_companion.data.modles.Item
 
 @Database(entities = [Item::class], version = 1)
-@TypeConverters(TypeConverters::class)
-abstract class LocalDatabase : RoomDatabase() {
+@TypeConverters(TypeConverter::class)
+abstract class AppDatabase : RoomDatabase() {
   abstract fun itemDao(): ItemDao
 
   companion object {
-    @Volatile
-    private var INSTANCE: LocalDatabase? = null
+    @Volatile private var INSTANCE: AppDatabase? = null
 
-    fun getDatabase(context: Context): LocalDatabase {
+    fun getInstance(context: Context): AppDatabase {
       return INSTANCE ?: synchronized(this) {
-        val instance = Room.databaseBuilder(
+        INSTANCE ?: Room.databaseBuilder(
           context.applicationContext,
-          LocalDatabase::class.java,
-          "items_database"
-        ).build()
-        INSTANCE = instance
-        instance
+          AppDatabase::class.java,
+          "items.db"
+        ).build().also { INSTANCE = it }
       }
     }
   }

@@ -72,3 +72,8 @@ sealed class InfoBlock : Parcelable {
         }
     }
 }
+
+@Parcelize
+data class FormattedObject(
+    @Expose @SerializedName("value") val value: TranslationLines
+) : Parcelable

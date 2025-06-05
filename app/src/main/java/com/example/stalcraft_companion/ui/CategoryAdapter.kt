@@ -1,69 +1,91 @@
 package com.example.stalcraft_companion.ui
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.stalcraft_companion.R
 import com.example.stalcraft_companion.data.modles.CategoryGroup
 import com.example.stalcraft_companion.data.modles.Item
+import com.example.stalcraft_companion.data.modles.TranslationString
+import com.example.stalcraft_companion.databinding.ItemCategoryBinding
+import com.example.stalcraft_companion.databinding.ItemLayoutBinding
+import com.example.stalcraft_companion.databinding.ItemSubcategoryBinding
 
 class CategoryAdapter(
     private val onItemClick: (Item) -> Unit
 ) : ListAdapter<CategoryGroup, RecyclerView.ViewHolder>(CategoryDiffCallback()) {
 
     sealed class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        class Category(view: View) : ViewHolder(view)
-        class Subcategory(view: View) : ViewHolder(view)
-        class Item(view: View, val onClick: (Item) -> Unit) : ViewHolder(view)
+        class Category(val binding: ItemCategoryBinding) : ViewHolder(binding.root)
+        class Subcategory(val binding: ItemSubcategoryBinding) : ViewHolder(binding.root)
+        class Item(val binding: ItemLayoutBinding) : ViewHolder(binding.root)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return when (viewType) {
             TYPE_CATEGORY -> ViewHolder.Category(
-                LayoutInflater.from(parent.context).inflate(R.layout.item_category, parent, false)
-            )
+                ItemCategoryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
             TYPE_SUBCATEGORY -> ViewHolder.Subcategory(
-                LayoutInflater.from(parent.context).inflate(R.layout.item_subcategory, parent, false)
-            )
+                ItemSubcategoryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
             else -> ViewHolder.Item(
-                LayoutInflater.from(parent.context).inflate(R.layout.item_layout, parent, false),
-                onItemClick
-            )
+                ItemLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is ViewHolder.Category -> bindCategory(holder, position)
-            is ViewHolder.Subcategory -> bindSubcategory(holder, position)
-            is ViewHolder.Item -> bindItem(holder, position)
+            is ViewHolder.Category -> bindCategory(holder, getItem(position))
+            is ViewHolder.Subcategory -> bindSubcategory(holder, getItem(position))
+            is ViewHolder.Item -> bindItem(holder, getItem(position))
+        }
+    }
+
+    private fun bindCategory(holder: ViewHolder.Category, group: CategoryGroup) {
+        holder.binding.tvTitle.text = group.categoryName
+    }
+
+    private fun bindSubcategory(holder: ViewHolder.Subcategory, group: CategoryGroup) {
+        holder.binding.tvTitle.text = group.subcategories.first().subcategoryName
+    }
+
+    private fun bindItem(holder: ViewHolder.Item, group: CategoryGroup) {
+        val item = group.subcategories.first().items.first()
+        holder.binding.apply {
+            itemTitle.text = when (val name = item.name) {
+                is TranslationString.Text -> name.text
+                is TranslationString.Translation -> name.lines.ru
+            }
+            itemCategory.text = item.category
+            itemRarityColor.setBackgroundColor(Color.parseColor(item.color))
+            itemState.text = item.status.state
+            root.setOnClickListener { onItemClick(item) }
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        // Логика определения типа элемента
-    }
-
-    private fun bindCategory(holder: ViewHolder.Category, position: Int) {
-        val category = getCategory(position)
-        holder.itemView.findViewById<TextView>(R.id.tvTitle).text = category.name
-    }
-
-    private fun bindSubcategory(holder: CategoryAdapter.ViewHolder.Subcategory, position: Int) {
-        val subcategory = getCategory(position)
-        holder.itemView.findViewById<TextView>(R.id.tvTitle).text = subcategory.name
-    }
-
-    private fun bindItem(holder: CategoryAdapter.ViewHolder.Item, position: Int) {
-
+        return when {
+            getItem(position).isCategory -> TYPE_CATEGORY
+            getItem(position).isSubcategory -> TYPE_SUBCATEGORY
+            else -> TYPE_ITEM
+        }
     }
 
     companion object {
         const val TYPE_CATEGORY = 0
         const val TYPE_SUBCATEGORY = 1
         const val TYPE_ITEM = 2
+    }
+}
+
+class CategoryDiffCallback : DiffUtil.ItemCallback<CategoryGroup>() {
+    override fun areItemsTheSame(oldItem: CategoryGroup, newItem: CategoryGroup): Boolean {
+        return oldItem.categoryName == newItem.categoryName
+    }
+
+    override fun areContentsTheSame(oldItem: CategoryGroup, newItem: CategoryGroup): Boolean {
+        return oldItem == newItem
     }
 }

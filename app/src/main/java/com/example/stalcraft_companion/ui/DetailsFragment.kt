@@ -9,63 +9,93 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.example.stalcraft_companion.R
 import com.example.stalcraft_companion.data.modles.InfoBlock
 import com.example.stalcraft_companion.data.modles.Item
 import com.example.stalcraft_companion.data.modles.TranslationString
+import com.example.stalcraft_companion.databinding.FragmentDetailsBinding
+import com.example.stalcraft_companion.databinding.ItemInfoblockTextBinding
 
 class DetailsFragment : Fragment() {
-    companion object {
-        private const val ARG_ITEM = "item"
-        fun newInstance(item: Item?) = DetailsFragment().apply {
-            arguments = Bundle().apply {
-                putParcelable(ARG_ITEM, item)
-            }
-        }
-    }
+    private lateinit var binding: FragmentDetailsBinding
+    private lateinit var viewModel: ItemViewModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        return inflater.inflate(R.layout.fragment_details, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentDetailsBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel = ViewModelProvider(requireActivity()).get(ItemViewModel::class.java)
 
-        val item = arguments?.getParcelable<Item>(ARG_ITEM)
-        item?.let { bindItemDetails(view, it) }
+        arguments?.getString("item_id")?.let { itemId ->
+            viewModel.getItemById(itemId).observe(viewLifecycleOwner) { item ->
+                item?.let { bindItemDetails(it) }
+            }
+        }
 
-        view.findViewById<ImageView>(R.id.leave_layout).setOnClickListener {
+        binding.leaveLayout.setOnClickListener {
             parentFragmentManager.popBackStack()
         }
     }
 
-    private fun bindItemDetails(view: View, item: Item) {
-        view.findViewById<TextView>(R.id.item_title).text = when (val name = item.name) {
-            is TranslationString.Text -> name.text
-            is TranslationString.Translation -> name.lines.ru
-        }
+    private fun bindItemDetails(item: Item) {
+        with(binding) {
+            itemTitle.text = when (val name = item.name) {
+                is TranslationString.Text -> name.text
+                is TranslationString.Translation -> name.lines.ru
+            }
+            itemCategory.text = item.category
+            itemRarityColor.setBackgroundColor(Color.parseColor(item.color))
+            itemState.text = item.status.state
 
-        view.findViewById<TextView>(R.id.item_category).text = item.category
-        view.findViewById<View>(R.id.item_rarity_color).setBackgroundColor(Color.parseColor(item.color))
-        view.findViewById<TextView>(R.id.item_state).text = item.status.state
-
-        // Отображение infoBlocks
-        val infoContainer = view.findViewById<LinearLayout>(R.id.item_infoBlocks)
-        infoContainer.removeAllViews()
-
-        item.infoBlocks?.forEach { block ->
-            when (block) {
-                is InfoBlock.TextBlock -> addTextBlock(infoContainer, block)
-                is InfoBlock.DamageBlock -> TODO()
-                is InfoBlock.KeyValueBlock -> TODO()
-                is InfoBlock.ListBlock -> TODO()
-                is InfoBlock.NumericBlock -> TODO()
-                is InfoBlock.RangeBlock -> TODO()
+            itemInfoBlocks.removeAllViews()
+            item.infoBlocks?.forEach { block ->
+                when (block) {
+                    is InfoBlock.TextBlock -> addTextBlock(block)
+                    is InfoBlock.DamageBlock -> TODO()
+                    is InfoBlock.RangeBlock -> TODO()
+                    is InfoBlock.KeyValueBlock -> addKeyValueBlock(block)
+                    is InfoBlock.ListBlock -> TODO()
+                    is InfoBlock.NumericBlock -> TODO()
+                }
             }
         }
     }
 
-    private fun addTextBlock(container: LinearLayout, block: InfoBlock.TextBlock) {
-        // Создание и добавление блока
+    private fun addKeyValueBlock(block: InfoBlock.KeyValueBlock) {
+        val view = ItemInfoblockTextBinding.inflate(layoutInflater).apply {
+            key.text = block.key.toString()
+            value.text = when (val text = block.value) {
+                is TranslationString.Text -> text.text
+                is TranslationString.Translation -> text.lines.ru
+            }
+        }
+        binding.itemInfoBlocks.addView(view.root)
+    }
+
+    private fun addTextBlock(block: InfoBlock.TextBlock) {
+        val view = ItemInfoblockTextBinding.inflate(layoutInflater).apply {
+            key.text = block.title.toString()
+            value.text = when (val text = block.text) {
+                is TranslationString.Text -> text.text
+                is TranslationString.Translation -> text.lines.ru
+            }
+        }
+        binding.itemInfoBlocks.addView(view.root)
+    }
+
+    companion object {
+        fun newInstance(itemId: String) = DetailsFragment().apply {
+            arguments = Bundle().apply {
+                putString("item_id", itemId)
+            }
+        }
     }
 }

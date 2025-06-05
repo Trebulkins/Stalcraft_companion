@@ -36,8 +36,3 @@ data class TranslationLines(
     @Expose @SerializedName("eu") val eu: String? = null,
     @Expose @SerializedName("es") val es: String? = null
 ) : Parcelable
-
-@Parcelize
-data class FormattedObject(
-    @Expose @SerializedName("value") val value: TranslationLines
-) : Parcelable

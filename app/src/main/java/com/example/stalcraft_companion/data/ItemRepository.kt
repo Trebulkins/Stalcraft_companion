@@ -1,32 +1,15 @@
 package com.example.stalcraft_companion.data
 
 import com.example.stalcraft_companion.data.modles.Item
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.Flow
 
 class ItemRepository(private val itemDao: ItemDao) {
-    val allItems: Flow<List<Item>> = itemDao.getAllItems()
+    fun getAllItems(): Flow<List<Item>> = itemDao.getAllItems()
 
-    suspend fun refreshData() {
+    suspend fun refreshData(apiService: ApiService) {
         try {
-            val apiService = ApiClient.instance
-            // Загрузка listing.json
-            val itemListings = apiService.getItemsListing()
-
-            // Параллельная загрузка всех items
-            val items = itemListings.map { listing ->
-                GlobalScope.async {
-                    try {
-                        apiService.getItem(listing.data)
-                    } catch (e: Exception) {
-                        null
-                    }
-                }
-            }.awaitAll().filterNotNull()
-
-            // Сохранение в базу данных
+            val listings = apiService.getItemsListing()
+            val items = listings.map { apiService.getItem(it.data) }
             itemDao.clearAll()
             itemDao.insertAll(items)
         } catch (e: Exception) {
@@ -34,7 +17,7 @@ class ItemRepository(private val itemDao: ItemDao) {
         }
     }
 
-    suspend fun getItemById(itemId: String): Item? {
-        return itemDao.getItemById(itemId)
+    suspend fun getItemById(id: String): Item? {
+        return itemDao.getItemById(id)
     }
 }

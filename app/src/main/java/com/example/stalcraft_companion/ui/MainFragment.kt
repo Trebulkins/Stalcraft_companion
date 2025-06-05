@@ -6,32 +6,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stalcraft_companion.R
 import com.example.stalcraft_companion.data.modles.CategoryGroup
 import com.example.stalcraft_companion.data.modles.Item
 import com.example.stalcraft_companion.data.modles.SubcategoryGroup
+import com.example.stalcraft_companion.databinding.FragmentMainBinding
 
-private const val TAG = "MainFragment"
 class MainFragment : Fragment() {
     interface OnItemSelectedListener {
-        fun onItemSelected(itemId: String)
+        fun onItemSelected(item: Item)
     }
 
+    private lateinit var binding: FragmentMainBinding
+    private lateinit var viewModel: ItemViewModel
     private var listener: OnItemSelectedListener? = null
-
-    companion object {
-        private const val ARG_ITEMS = "items"
-
-        fun newInstance(items: ArrayList<Item>): MainFragment {
-            return MainFragment().apply {
-                arguments = Bundle().apply {
-                    putParcelableArrayList(ARG_ITEMS, items)
-                }
-            }
-        }
-    }
+    private lateinit var adapter: CategoryAdapter
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -43,36 +36,35 @@ class MainFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_main, container, false)
+        binding = FragmentMainBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val items = arguments?.getParcelableArrayList<Item>(ARG_ITEMS) ?: return
-        val recyclerView = view.findViewById<RecyclerView>(R.id.main_RecyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(context)
+        viewModel = ViewModelProvider(requireActivity()).get(ItemViewModel::class.java)
+        adapter = CategoryAdapter { item -> listener?.onItemSelected(item) }
 
-        val categoryGroups = prepareCategoryGroups(items)
-        val adapter = CategoryAdapter(categoryGroups) { itemId ->
-            listener?.onItemSelected(itemId)
+        binding.mainRecyclerView.apply {
+            var layoutManager = LinearLayoutManager(context)
+            adapter = this@MainFragment.adapter
         }
 
-        recyclerView.adapter = adapter
-    }
-
-    private fun prepareCategoryGroups(items: List<Item>): List<CategoryGroup> {
-        return items.groupBy { it.category }
-            .map { (category, categoryItems) ->
-                val (withSubcategory, withoutSubcategory) = categoryItems.partition { it.subcategory.isNotEmpty() }
-
+        viewModel.items.observe(viewLifecycleOwner) { items ->
+            val categories = items.groupBy { it.category }.map { (category, items) ->
                 CategoryGroup(
                     categoryName = category,
-                    subcategories = withSubcategory.groupBy { it.subcategory }
-                        .map { (subcategory, items) -> SubcategoryGroup(subcategory, false, items.map { it.id }) },
-                    itemIds = withoutSubcategory.map { it.id }
+                    subcategories = items.groupBy { it.subcategory }.map { (subcategory, items) ->
+                        SubcategoryGroup(subcategory, items)
+                    }
                 )
             }
-            .sortedBy { it.categoryName }
+            adapter.submitList(categories)
+        }
+    }
+
+    companion object {
+        fun newInstance() = MainFragment()
     }
 }
