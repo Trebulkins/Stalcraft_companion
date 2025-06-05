@@ -1,6 +1,7 @@
 package com.example.stalcraft_companion.api.schemas
 
 import android.os.Parcelable
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.Expose
@@ -30,11 +31,18 @@ data class Item (
 
     @SerializedName("status")
     @Expose
-    var status: StatusObject? = null,
+    var status: StatusObject,
 
     @SerializedName("infoBlocks")
     @Expose
-    var infoBlocks: List<InfoBlocksObject>? = null,
+    var infoBlocks: List<InfoBlock>? = null,
 ): Parcelable {
     val subcategory: String get() = category.substringAfter('/', missingDelimiterValue = "")
 }
+
+@Parcelize
+data class StatusObject (
+    @SerializedName("state")
+    @Expose
+    var state: String,
+): Parcelable
