@@ -1,32 +1,18 @@
 package com.example.stalcraft_companion.api.schemas
 
+import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class TranslationLines(
-    @SerializedName("ru")
-    @Expose
-    var ru: String? = null,
+    @SerializedName("ru") val ru: String? = null,
+    @SerializedName("eu") val eu: String? = null,
+    @SerializedName("es") val es: String? = null
+) : Parcelable
 
-    @SerializedName("en")
-    @Expose
-    var en: String? = null,
-
-    @SerializedName("es")
-    @Expose
-    var es: String? = null,
-
-)
-data class TranslationString(
-    @SerializedName("type")
-    @Expose
-    var type: String,
-
-    @SerializedName("text")
-    @Expose
-    var text: String? = null,
-
-    @SerializedName("lines")
-    @Expose
-    var lines: TranslationLines? = null,
-)
+@Parcelize
+data class FormattedObject(
+    val value: TranslationLines
+) : Parcelable

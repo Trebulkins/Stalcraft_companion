@@ -1,11 +1,15 @@
 package com.example.stalcraft_companion.api.schemas
 
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
+import kotlinx.parcelize.RawValue
 
 @Entity(tableName = "items")
+@Parcelize
 data class Item (
     @PrimaryKey
     @SerializedName("id")
@@ -31,6 +35,6 @@ data class Item (
     @SerializedName("infoBlocks")
     @Expose
     var infoBlocks: List<InfoBlocksObject>? = null,
-) {
+): Parcelable {
     val subcategory: String get() = category.substringAfter('/', missingDelimiterValue = "")
 }

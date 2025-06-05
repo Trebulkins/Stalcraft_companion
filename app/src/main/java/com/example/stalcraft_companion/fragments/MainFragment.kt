@@ -55,7 +55,7 @@ class MainFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(context)
 
         val categoryGroups = prepareCategoryGroups(items)
-        val adapter = CategoryAdapter(categoryGroups) { itemId ->
+        val adapter = ItemListingAdapter(categoryGroups) { itemId ->
             listener?.onItemSelected(itemId)
         }
 

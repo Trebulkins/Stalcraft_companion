@@ -36,20 +36,14 @@ data class ListingItem(
 data class CategoryGroup(
     val categoryName: String,
     val subcategories: List<SubcategoryGroup>,
-    var isExpanded: Boolean = false
+    var isExpanded: Boolean = false,
+    val itemIds: List<String>  // Изменено на List<String>
 ) {
     fun hasSubcategories(): Boolean = subcategories.any { it.subcategoryName.isNotEmpty() }
-    fun getAllItems(): List<ListingItem> = subcategories.flatMap { it.items }
 }
 
 data class SubcategoryGroup(
     val subcategoryName: String,
-    val items: List<ListingItem>,
-    var isExpanded: Boolean = false
-)
-
-data class StatusObject(
-    @SerializedName("state")
-    @Expose
-    var state: String
+    var isExpanded: Boolean = false,
+    val itemIds: List<String>  // Изменено на List<String>
 )
