@@ -21,4 +21,8 @@ class ItemRepository(private val itemDao: ItemDao) {
     fun getItemById(id: String): Item? {
         return itemDao.getItemById(id)
     }
+
+    fun insertAll(items: MutableList<Item>) {
+        itemDao.insertAll(items)
+    }
 }

@@ -1,6 +1,7 @@
 package com.example.stalcraft_companion.ui
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -21,6 +22,11 @@ class ItemViewModel(application: Application) : AndroidViewModel(application) {
     val error = MutableLiveData<String?>()
     val isEmpty = MutableLiveData<Boolean>()
 
+    // Новые поля для прогресса
+    val totalItems = MutableLiveData<Int>(0)
+    val loadedItems = MutableLiveData<Int>(0)
+    val progressPercentage = MutableLiveData<Int>(0)
+
     init {
         val dao = AppDatabase.getInstance(application).itemDao()
         repository = ItemRepository(dao)
@@ -34,8 +40,26 @@ class ItemViewModel(application: Application) : AndroidViewModel(application) {
         isLoading.value = true
         viewModelScope.launch {
             try {
-                repository.refreshData(apiService)
-                error.value = null
+                // 1. Получаем список всех ItemListing
+                val itemListings = apiService.getItemsListing()
+                totalItems.value = itemListings.size
+
+                // 2. Загружаем каждый Item по отдельности с прогрессом
+                val items = mutableListOf<Item>()
+                itemListings.forEachIndexed { index, listing ->
+                    try {
+                        val item = apiService.getItem(listing.data)
+                        items.add(item)
+                        loadedItems.value = index + 1
+                        progressPercentage.value = ((index + 1) * 100 / itemListings.size)
+                    } catch (e: Exception) {
+                        Log.e("ItemLoad", "Error loading item ${listing.id}", e)
+                    }
+                }
+
+                // 3. Сохраняем в базу
+                repository.insertAll(items)
+                progressPercentage.value = 100
             } catch (e: Exception) {
                 error.value = "Ошибка загрузки: ${e.message}"
             } finally {
