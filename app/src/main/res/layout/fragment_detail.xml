@@ -32,6 +32,15 @@
         android:layout_height="match_parent"
         android:visibility="invisible">
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/item_infoBlocks"
+            android:layout_width="414dp"
+            android:layout_height="580dp"
+            android:padding="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/item_rarity_color" />
+
         <ImageView
             android:id="@+id/leave_layout"
             android:layout_width="wrap_content"
@@ -46,15 +55,6 @@
             android:layout_height="148dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/item_infoBlocks"
-            android:layout_width="414dp"
-            android:layout_height="580dp"
-            android:padding="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/item_rarity_color" />
 
         <TextView
             android:id="@+id/item_state"

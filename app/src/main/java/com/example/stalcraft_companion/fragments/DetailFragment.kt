@@ -9,10 +9,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.example.stalcraft_companion.ItemViewModel
 import com.example.stalcraft_companion.R
 import com.example.stalcraft_companion.api.ApiClient
 import com.example.stalcraft_companion.api.schemas.Item
@@ -23,16 +21,14 @@ class DetailFragment : Fragment() {
     companion object {
         private const val ARG_ITEM_ID = "item_id"
 
-        fun newInstance(itemId: String?): DetailFragment {
+        fun newInstance(itemId: String?): DetailFragment {  // Изменено на String
             return DetailFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_ITEM_ID, itemId)
+                    putString(ARG_ITEM_ID, itemId)  // Изменено на putString
                 }
             }
         }
     }
-
-    private val viewModel: ItemViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,25 +41,22 @@ class DetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val itemId = arguments?.getString(ARG_ITEM_ID, null)
+        val itemId = arguments?.getString(ARG_ITEM_ID)  // Изменено на getString
 
         if (!itemId.isNullOrEmpty()) {
             loadItemDetails(itemId)
         } else {
             showPlaceholder()
         }
-
-        setupBackButton(view)
     }
 
-    private fun loadItemDetails(itemId: String) {
+    private fun loadItemDetails(itemId: String) {  // Изменено на String
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.getItemById(itemId)?.let { item ->
                 bindItem(item)
             } ?: showError()
         }
     }
-
     private fun bindItem(item: Item) {
         view?.apply {
             findViewById<TextView>(R.id.item_title).text = item.name?.lines?.ru

@@ -51,11 +51,11 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val items = arguments?.getParcelableArrayList<Item>(ARG_ITEMS) ?: return
-        val recyclerView = view.findViewById<RecyclerView>(R.id.item_infoBlocks)
+        val recyclerView = view.findViewById<RecyclerView>(R.id.main_RecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(context)
 
         val categoryGroups = prepareCategoryGroups(items)
-        val adapter = ItemListingAdapter(categoryGroups) { itemId ->
+        val adapter = CategoryAdapter(categoryGroups) { itemId ->
             listener?.onItemSelected(itemId)
         }
 
@@ -63,29 +63,17 @@ class MainFragment : Fragment() {
     }
 
     private fun prepareCategoryGroups(items: List<Item>): List<CategoryGroup> {
-        val groups = mutableListOf<CategoryGroup>()
+        return items.groupBy { it.category }
+            .map { (category, categoryItems) ->
+                val (withSubcat, withoutSubcat) = categoryItems.partition { it.subcategory.isNotEmpty() }
 
-        // Группировка по категориям
-        val categories = items.groupBy { it.category }
-
-        categories.forEach { (category, categoryItems) ->
-            // Разделение на элементы с подкатегориями и без
-            val (withSubcat, withoutSubcat) = categoryItems.partition { it.subcategory.isNotEmpty() }
-
-            val subcategories = withSubcat.groupBy { it.subcategory }
-                .map { (subcategory, items) ->
-                    SubcategoryGroup(subcategory, items.map { it.id })
-                        .sortedBy { it.subcategoryName }
-
-                    groups.add(
-                        CategoryGroup(
-                            categoryName = category,
-                            subcategories = subcategories,
-                            itemIds = withoutSubcat.map { it.id }
-                        )
-                    )
-                }
-
-            return groups.sortedBy { it.categoryName }
-        }
+                CategoryGroup(
+                    categoryName = category,
+                    subcategories = withSubcat.groupBy { it.subcategory }
+                        .map { (subcat, items) -> SubcategoryGroup(subcat, items.map { it.id }) },
+                    itemIds = withoutSubcat.map { it.id }
+                )
+            }
+            .sortedBy { it.categoryName }
     }
+}

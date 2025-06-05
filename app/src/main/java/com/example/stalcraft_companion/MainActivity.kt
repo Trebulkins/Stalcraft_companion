@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.stalcraft_companion.api.schemas.Item
-import com.example.stalcraft_companion.api.schemas.ListingItem
 import com.example.stalcraft_companion.fragments.DetailFragment
 import com.example.stalcraft_companion.fragments.MainFragment
 import com.google.android.material.snackbar.Snackbar
@@ -38,30 +37,21 @@ class MainActivity : AppCompatActivity(), MainFragment.OnItemSelectedListener {
             }
         }
 
-        viewModel.isLoading.observe(this) { isLoading ->
-            // Управление индикатором загрузки
-        }
-
-        viewModel.errorMessage.observe(this) { error ->
-            error?.let {
-                Snackbar.make(
-                    findViewById(android.R.id.content),
-                    it,
-                    Snackbar.LENGTH_LONG
-                ).show()
-            }
+        viewModel.error.observe(this) { error ->
+            error?.let { showError(it) }
         }
     }
 
-    private fun loadData() {
-        viewModel.refreshData()
-    }
+    private fun loadData() = viewModel.refreshData()
 
     private fun showMainFragment(items: List<Item>) {
-        val fragment = MainFragment.newInstance(ArrayList(items))
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, fragment)
+            .replace(R.id.fragment_container, MainFragment.newInstance(ArrayList(items)))
             .commit()
+    }
+
+    private fun showError(message: String) {
+        Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG).show()
     }
 
     override fun onItemSelected(itemId: String) {

@@ -15,7 +15,7 @@ class ItemViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: ItemRepository
     val allItems: LiveData<List<Item>>
     val isLoading = MutableLiveData(false)
-    val errorMessage = MutableLiveData<String?>()
+    val error = MutableLiveData<String?>()
 
     init {
         val dao = LocalDatabase.getDatabase(application).itemDao()
@@ -25,19 +25,17 @@ class ItemViewModel(application: Application) : AndroidViewModel(application) {
 
     fun refreshData() {
         viewModelScope.launch {
-            isLoading.postValue(true)
-            errorMessage.postValue(null)
+            isLoading.value = true
+            error.value = null
             try {
                 repository.refreshData()
             } catch (e: Exception) {
-                errorMessage.postValue("Ошибка загрузки: ${e.message}")
+                error.value = e.message
             } finally {
-                isLoading.postValue(false)
+                isLoading.value = false
             }
         }
     }
 
-    suspend fun getItemById(itemId: String): Item? {
-        return repository.getItemById(itemId)
-    }
+    suspend fun getItemById(itemId: String): Item? = repository.getItemById(itemId)
 }

@@ -7,6 +7,9 @@ import com.google.gson.annotations.SerializedName
 
 @Entity(tableName = "listing")
 data class ListingItem(
+    @SerializedName("name")
+    @Expose
+    var name: TranslationString,
 
     @SerializedName("data")
     @Expose
@@ -15,10 +18,6 @@ data class ListingItem(
     @SerializedName("icon")
     @Expose
     var icon: String? = null,
-
-    @SerializedName("name")
-    @Expose
-    var name: TranslationString,
 
     @SerializedName("color")
     @Expose
