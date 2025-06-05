@@ -60,6 +60,7 @@ dependencies {
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.logging.interceptor)
 
     // Room components
     implementation(libs.androidx.room.runtime)

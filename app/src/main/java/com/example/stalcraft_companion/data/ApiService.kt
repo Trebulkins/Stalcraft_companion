@@ -2,6 +2,8 @@ package com.example.stalcraft_companion.data
 
 import com.example.stalcraft_companion.data.modles.Item
 import com.example.stalcraft_companion.data.modles.ListingItem
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
@@ -19,7 +21,14 @@ object ApiClient {
     const val BASE_URL = "https://raw.githubusercontent.com/EXBO-Studio/stalcraft-database/main/ru/"
 
     val instance: ApiService by lazy {
+        val httpClient = OkHttpClient.Builder()
+            .addInterceptor(HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BODY
+            })
+            .build()
+
         Retrofit.Builder()
+            .client(httpClient)
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create(GsonProvider.instance))
             .build()

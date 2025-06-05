@@ -8,8 +8,8 @@ import com.google.gson.annotations.SerializedName
 import io.reactivex.Observable
 import kotlinx.parcelize.Parcelize
 
-@Entity(tableName = "items")
 @Parcelize
+@Entity(tableName = "items")
 data class Item (
     @Expose @SerializedName("id") @PrimaryKey var id: String,
     @Expose @SerializedName("name") var name: TranslationString,

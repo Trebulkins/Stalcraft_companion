@@ -1,5 +1,6 @@
 package com.example.stalcraft_companion.data
 
+import android.util.Log
 import com.example.stalcraft_companion.data.modles.Item
 import kotlinx.coroutines.flow.Flow
 
@@ -8,8 +9,13 @@ class ItemRepository(private val itemDao: ItemDao) {
     fun getAllItems(): Flow<List<Item>> = itemDao.getAllItems()
 
     suspend fun refreshData(apiService: ApiService) {
-        val items = apiService.getItemsListing().map { apiService.getItem(it.data) }
-        itemDao.insertAll(items)
+        try {
+            val items = apiService.getItemsListing().map { apiService.getItem(it.data) }
+            itemDao.insertAll(items)
+        } catch (e: Exception) {
+            Log.e("API_ERROR", "Failed to parse: ${e.message}")
+            throw e
+        }
     }
 
     fun getItemById(id: String): Item? {

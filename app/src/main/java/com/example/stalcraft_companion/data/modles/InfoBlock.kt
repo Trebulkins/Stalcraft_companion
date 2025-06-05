@@ -7,15 +7,16 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 import org.json.JSONObject
 
+@Parcelize
 sealed class InfoBlock : Parcelable {
     abstract val type: String
 
     @Parcelize
     data class TextBlock(
         @Expose @SerializedName("type") override val type: String = "text",
-        @Expose @SerializedName("title") val title: TranslationString,
+        @Expose @SerializedName("title") val title: TranslationString?,
         @Expose @SerializedName("text") val text: TranslationString
-    ) : InfoBlock()
+    ) : InfoBlock(), Parcelable
 
     @Parcelize
     data class DamageBlock(
@@ -25,14 +26,14 @@ sealed class InfoBlock : Parcelable {
         @Expose @SerializedName("endDamage") val endDamage: Float,
         @Expose @SerializedName("damageDecreaseEnd") val damageDecreaseEnd: Float,
         @Expose @SerializedName("maxDistance") val maxDistance: Float
-    ) : InfoBlock()
+    ) : InfoBlock(), Parcelable
 
     @Parcelize
     data class ListBlock(
         @Expose @SerializedName("type") override val type: String = "list",
         @Expose @SerializedName("title") val title: TranslationString,
         @Expose @SerializedName("elements") val elements: List<InfoBlock>
-    ) : InfoBlock()
+    ) : InfoBlock(), Parcelable
 
     @Parcelize
     data class NumericBlock(
@@ -40,14 +41,14 @@ sealed class InfoBlock : Parcelable {
         @Expose @SerializedName("name") val name: TranslationString,
         @Expose @SerializedName("value") val value: Float,
         @Expose @SerializedName("formatted") val formatted: FormattedObject
-    ) : InfoBlock()
+    ) : InfoBlock(), Parcelable
 
     @Parcelize
     data class KeyValueBlock(
         @Expose @SerializedName("type") override val type: String = "key-value",
         @Expose @SerializedName("key") val key: TranslationString,
         @Expose @SerializedName("value") val value: TranslationString
-    ) : InfoBlock()
+    ) : InfoBlock(), Parcelable
 
     @Parcelize
     data class RangeBlock(
@@ -55,13 +56,19 @@ sealed class InfoBlock : Parcelable {
         @Expose @SerializedName("name") val name: TranslationString,
         @Expose @SerializedName("min") val min: Float,
         @Expose @SerializedName("max") val max: Float
-    ) : InfoBlock()
+    ) : InfoBlock(), Parcelable
 
     @Parcelize
     data class UsageBlock(
         @Expose @SerializedName("type") override val type: String = "usage",
         @Expose @SerializedName("name") val name: TranslationString
-    ) : InfoBlock()
+    ) : InfoBlock(), Parcelable
+
+    @Parcelize
+    data class ItemBlock(
+        @Expose @SerializedName("type") override val type: String = "item",
+        @Expose @SerializedName("name") val name: TranslationString
+    ) : InfoBlock(), Parcelable
 
     companion object {
         fun fromJson(json: String): InfoBlock {
@@ -74,6 +81,7 @@ sealed class InfoBlock : Parcelable {
                 "key-value" -> Gson().fromJson(json, KeyValueBlock::class.java)
                 "range" -> Gson().fromJson(json, RangeBlock::class.java)
                 "usage" -> Gson().fromJson(json, UsageBlock::class.java)
+                "item" -> Gson().fromJson(json, ItemBlock::class.java)
                 else -> throw IllegalArgumentException("Unknown InfoBlock type")
             }
         }

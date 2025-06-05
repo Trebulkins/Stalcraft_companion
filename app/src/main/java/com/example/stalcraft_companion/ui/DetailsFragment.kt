@@ -5,12 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.stalcraft_companion.R
 import com.example.stalcraft_companion.data.modles.InfoBlock
 import com.example.stalcraft_companion.data.modles.Item
 import com.example.stalcraft_companion.data.modles.TranslationString
@@ -65,6 +61,7 @@ class DetailsFragment : Fragment() {
                     is InfoBlock.ListBlock -> TODO()
                     is InfoBlock.NumericBlock -> TODO()
                     is InfoBlock.UsageBlock -> TODO()
+                    is InfoBlock.ItemBlock -> TODO()
                 }
             }
         }

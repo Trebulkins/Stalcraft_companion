@@ -6,8 +6,8 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
 object GsonProvider {
-    val instance: Gson by lazy {
-        GsonBuilder()
+    private fun getGsonBuilder(): GsonBuilder {
+        return GsonBuilder()
             .registerTypeAdapterFactory(
                 RuntimeTypeAdapterFactory.of(TranslationString::class.java, "type")
                     .registerSubtype(TranslationString.Text::class.java, "text")
@@ -22,7 +22,8 @@ object GsonProvider {
                     .registerSubtype(InfoBlock.KeyValueBlock::class.java, "key-value")
                     .registerSubtype(InfoBlock.RangeBlock::class.java, "range")
                     .registerSubtype(InfoBlock.UsageBlock::class.java, "usage")
+                    .registerSubtype(InfoBlock.ItemBlock::class.java, "item")
             )
-            .create()
     }
+    val instance: Gson by lazy { getGsonBuilder().create() }
 }
