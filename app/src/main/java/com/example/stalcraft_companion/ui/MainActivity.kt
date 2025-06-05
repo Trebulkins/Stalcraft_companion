@@ -58,6 +58,9 @@ class MainActivity : AppCompatActivity(), MainFragment.OnItemSelectedListener {
                 if (items.isEmpty()) {
                     viewModel.refreshData(ApiClient.instance)
                 }
+                else {
+                    Snackbar.make(binding.root, "База предметов уже установлена, обновлене не требуется", Snackbar.LENGTH_LONG).show()
+                }
             }
         } else {
             Snackbar.make(binding.root, "Нет интернет-соединения", Snackbar.LENGTH_LONG).show()

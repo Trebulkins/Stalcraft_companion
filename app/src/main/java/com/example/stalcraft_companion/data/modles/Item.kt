@@ -16,7 +16,7 @@ data class Item (
     @Expose @SerializedName("category") var category: String,
     @Expose @SerializedName("color") var color: String = "DEFAULT",
     @Expose @SerializedName("status") var status: StatusObject,
-    @Expose @SerializedName("infoBlocks") var infoBlocks: List<InfoBlock>? = null,
+    @Expose @SerializedName("infoBlocks") var infoBlocks: List<InfoBlock>?
 ): Parcelable {
     val subcategory get() = category.substringAfter('/', missingDelimiterValue = "")
 

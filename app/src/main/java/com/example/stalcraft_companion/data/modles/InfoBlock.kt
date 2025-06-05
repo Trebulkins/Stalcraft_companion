@@ -1,15 +1,13 @@
 package com.example.stalcraft_companion.data.modles
 
 import android.os.Parcelable
-import com.google.gson.Gson
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
-import org.json.JSONObject
 
 @Parcelize
 sealed class InfoBlock : Parcelable {
-    abstract val type: String
+    abstract val type: String?
 
     @Parcelize
     data class TextBlock(
@@ -32,7 +30,7 @@ sealed class InfoBlock : Parcelable {
     data class ListBlock(
         @Expose @SerializedName("type") override val type: String = "list",
         @Expose @SerializedName("title") val title: TranslationString,
-        @Expose @SerializedName("elements") val elements: List<InfoBlock>
+        @Expose @SerializedName("elements") val elements: List<InfoBlock>?
     ) : InfoBlock(), Parcelable
 
     @Parcelize
@@ -69,23 +67,6 @@ sealed class InfoBlock : Parcelable {
         @Expose @SerializedName("type") override val type: String = "item",
         @Expose @SerializedName("name") val name: TranslationString
     ) : InfoBlock(), Parcelable
-
-    companion object {
-        fun fromJson(json: String): InfoBlock {
-            val type = JSONObject(json).getString("type")
-            return when (type) {
-                "text" -> Gson().fromJson(json, TextBlock::class.java)
-                "damage" -> Gson().fromJson(json, DamageBlock::class.java)
-                "list" -> Gson().fromJson(json, ListBlock::class.java)
-                "numeric" -> Gson().fromJson(json, NumericBlock::class.java)
-                "key-value" -> Gson().fromJson(json, KeyValueBlock::class.java)
-                "range" -> Gson().fromJson(json, RangeBlock::class.java)
-                "usage" -> Gson().fromJson(json, UsageBlock::class.java)
-                "item" -> Gson().fromJson(json, ItemBlock::class.java)
-                else -> throw IllegalArgumentException("Unknown InfoBlock type")
-            }
-        }
-    }
 }
 
 @Parcelize

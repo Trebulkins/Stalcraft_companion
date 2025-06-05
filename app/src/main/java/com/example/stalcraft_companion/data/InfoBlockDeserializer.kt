@@ -1,5 +1,6 @@
 package com.example.stalcraft_companion.data
 
+import com.example.stalcraft_companion.data.modles.FormattedObject
 import com.example.stalcraft_companion.data.modles.InfoBlock
 import com.example.stalcraft_companion.data.modles.TranslationLines
 import com.example.stalcraft_companion.data.modles.TranslationString
@@ -15,9 +16,9 @@ class InfoBlockDeserializer : JsonDeserializer<InfoBlock> {
         json: JsonElement,
         typeOfT: Type,
         context: JsonDeserializationContext
-    ): InfoBlock {
+    ): InfoBlock? {
         val jsonObject = json.asJsonObject
-        return when (jsonObject.get("type").asString) {
+        return when (jsonObject.get("type")?.asString) {
             "text" -> InfoBlock.TextBlock(
                 title = context.deserialize(jsonObject.get("title"), TranslationString::class.java),
                 text = context.deserialize(jsonObject.get("text"), TranslationString::class.java)
@@ -41,7 +42,7 @@ class InfoBlockDeserializer : JsonDeserializer<InfoBlock> {
             "numeric" -> InfoBlock.NumericBlock(
                 name = context.deserialize(jsonObject.get("name"), TranslationString::class.java),
                 value = jsonObject.get("value").asFloat,
-                formatted = context.deserialize(jsonObject.get("formatted"), TranslationString::class.java)
+                formatted = context.deserialize(jsonObject.get("formatted"), FormattedObject::class.java)
             )
             "key-value" -> InfoBlock.KeyValueBlock(
                 key = context.deserialize(jsonObject.get("key"), TranslationString::class.java),
@@ -53,7 +54,8 @@ class InfoBlockDeserializer : JsonDeserializer<InfoBlock> {
             "item" -> InfoBlock.ItemBlock(
                 name = context.deserialize(jsonObject.get("name"), TranslationString::class.java)
             )
-            else -> throw JsonParseException("Unknown type")
+            null -> null
+            else -> throw JsonParseException("Unknown type: ${jsonObject.get("type")} on JsonObject (InfoBlock): $jsonObject")
         }
     }
 }
@@ -65,16 +67,14 @@ class TranslationStringDeserializer: JsonDeserializer<TranslationString> {
         context: JsonDeserializationContext
     ): TranslationString {
         val jsonObject = json.asJsonObject
-        return when (jsonObject.get("type").asString) {
+        return when (jsonObject.get("type")?.asString) {
             "text" -> TranslationString.Text(
                 text = jsonObject.get("text").asString
             )
-
             "translation" -> TranslationString.Translation(
                 lines = context.deserialize(jsonObject.get("lines"), TranslationLines::class.java)
             )
-
-            else -> throw JsonParseException("Unknown type")
+            else -> throw JsonParseException("Unknown type: ${jsonObject.get("type")} on JsonObject (TranslationString): $jsonObject")
         }
     }
 }

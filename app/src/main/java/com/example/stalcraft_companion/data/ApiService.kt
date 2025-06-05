@@ -21,14 +21,7 @@ object ApiClient {
     const val BASE_URL = "https://raw.githubusercontent.com/EXBO-Studio/stalcraft-database/main/ru/"
 
     val instance: ApiService by lazy {
-        val httpClient = OkHttpClient.Builder()
-            .addInterceptor(HttpLoggingInterceptor().apply {
-                level = HttpLoggingInterceptor.Level.BODY
-            })
-            .build()
-
         Retrofit.Builder()
-            .client(httpClient)
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create(GsonProvider.instance))
             .build()
