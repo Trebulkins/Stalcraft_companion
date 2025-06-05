@@ -64,6 +64,7 @@ class DetailsFragment : Fragment() {
                     is InfoBlock.KeyValueBlock -> addKeyValueBlock(block)
                     is InfoBlock.ListBlock -> TODO()
                     is InfoBlock.NumericBlock -> TODO()
+                    is InfoBlock.UsageBlock -> TODO()
                 }
             }
         }

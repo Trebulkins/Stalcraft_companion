@@ -21,6 +21,7 @@ object GsonProvider {
                     .registerSubtype(InfoBlock.ListBlock::class.java, "list")
                     .registerSubtype(InfoBlock.KeyValueBlock::class.java, "key-value")
                     .registerSubtype(InfoBlock.RangeBlock::class.java, "range")
+                    .registerSubtype(InfoBlock.UsageBlock::class.java, "usage")
             )
             .create()
     }

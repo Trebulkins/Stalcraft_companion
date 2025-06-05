@@ -57,6 +57,12 @@ sealed class InfoBlock : Parcelable {
         @Expose @SerializedName("max") val max: Float
     ) : InfoBlock()
 
+    @Parcelize
+    data class UsageBlock(
+        @Expose @SerializedName("type") override val type: String = "usage",
+        @Expose @SerializedName("name") val name: TranslationString
+    ) : InfoBlock()
+
     companion object {
         fun fromJson(json: String): InfoBlock {
             val type = JSONObject(json).getString("type")
@@ -67,6 +73,7 @@ sealed class InfoBlock : Parcelable {
                 "numeric" -> Gson().fromJson(json, NumericBlock::class.java)
                 "key-value" -> Gson().fromJson(json, KeyValueBlock::class.java)
                 "range" -> Gson().fromJson(json, RangeBlock::class.java)
+                "usage" -> Gson().fromJson(json, UsageBlock::class.java)
                 else -> throw IllegalArgumentException("Unknown InfoBlock type")
             }
         }

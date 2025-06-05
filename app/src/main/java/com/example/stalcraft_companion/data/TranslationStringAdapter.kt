@@ -81,6 +81,10 @@ class InfoBlocksObjectAdapter : TypeAdapter<InfoBlock>() {
                 addProperty("min", value.min)
                 addProperty("max", value.max)
             }
+            is InfoBlock.UsageBlock -> JsonObject().apply {
+                addProperty("type", "usage")
+                add("name", Gson().toJsonTree(value.name))
+            }
             else -> throw IllegalArgumentException("Unsupported type")
         }
         out.jsonValue(Gson().toJson(json))
@@ -123,6 +127,10 @@ class InfoBlocksObjectAdapter : TypeAdapter<InfoBlock>() {
                 name = Gson().fromJson(json.get("name"), TranslationString::class.java),
                 min = json.get("min").asFloat,
                 max = json.get("max").asFloat
+            )
+            "usage" -> InfoBlock.UsageBlock(
+                type = "range",
+                name = Gson().fromJson(json.get("name"), TranslationString::class.java)
             )
             else -> throw IllegalArgumentException("Unknown InfoBlocksObject type")
         }
