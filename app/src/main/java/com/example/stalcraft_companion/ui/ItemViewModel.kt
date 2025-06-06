@@ -8,9 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
-import com.example.stalcraft_companion.data.ApiService
 import com.example.stalcraft_companion.data.AppDatabase
-import com.example.stalcraft_companion.data.GitHubService
 import com.example.stalcraft_companion.data.modles.Item
 import com.example.stalcraft_companion.data.ItemRepository
 import kotlinx.coroutines.Dispatchers
@@ -25,11 +23,6 @@ class ItemViewModel(application: Application) : AndroidViewModel(application) {
     val error = MutableLiveData<String?>()
     val isEmpty = MutableLiveData<Boolean>()
 
-    // Новые поля для прогресса
-    val totalItems = MutableLiveData<Int>(0)
-    val loadedItems = MutableLiveData<Int>(0)
-    val progressPercentage = MutableLiveData<Int>(0)
-
     init {
         val dao = AppDatabase.getInstance(application).itemDao()
         repository = ItemRepository(dao)
@@ -39,40 +32,28 @@ class ItemViewModel(application: Application) : AndroidViewModel(application) {
         }.asLiveData()
     }
 
-    suspend fun checkForUpdates(gitHubService: GitHubService): Boolean {
+    val progress = MutableLiveData<Pair<Int, Int>>()
+
+    suspend fun checkForUpdates(): Boolean {
         return withContext(Dispatchers.IO) {
             try {
-                repository.needsUpdate(gitHubService, getApplication())
+                repository.needsUpdate(getApplication())
             } catch (e: Exception) {
                 false
             }
         }
     }
 
-    fun refreshData(apiService: ApiService) {
+    fun performUpdate() {
         isLoading.value = true
         viewModelScope.launch {
             try {
-                // 1. Получаем список всех ItemListing
-                val itemListings = apiService.getItemsListing()
-                totalItems.value = itemListings.size
-
-                // 2. Загружаем каждый Item по отдельности с прогрессом
-                val items = mutableListOf<Item>()
-                itemListings.forEachIndexed { index, listing ->
-                    try {
-                        val item = apiService.getItem(listing.data)
-                        items.add(item)
-                        loadedItems.value = index + 1
-                        progressPercentage.value = ((index + 1) * 100 / itemListings.size)
-                    } catch (e: Exception) {
-                        Log.e("ItemLoad", "Error loading itemId ${listing.id}: ", e)
-                    }
-                    repository.insertAll(items)
+                repository.refreshData(getApplication()) { current, total ->
+                    progress.postValue(Pair(current, total))
                 }
-                progressPercentage.value = 100
+                error.value = null
             } catch (e: Exception) {
-                error.value = "Ошибка загрузки: ${e.message}"
+                error.value = "Update failed: ${e.message}"
             } finally {
                 isLoading.value = false
             }

@@ -3,43 +3,41 @@ package com.example.stalcraft_companion.data
 import com.example.stalcraft_companion.data.modles.Item
 import com.example.stalcraft_companion.data.modles.ListingItem
 import com.example.stalcraft_companion.data.modles.VersionInfo
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 
-interface ApiService {
+interface GitHubApiService {
+    @GET("repos/EXBO-Studio/stalcraft-database")
+    suspend fun getRepoInfo(): VersionInfo
+}
+
+interface DatabaseApiService {
     @GET("listing.json")
-    suspend fun getItemsListing(): List<ListingItem>
+    suspend fun getItemListings(): List<ListingItem>
 
     @GET("{itemPath}")
     suspend fun getItem(@Path("itemPath") itemPath: String): Item
 }
 
-interface GitHubService {
-    @GET("repos/EXBO-Studio/stalcraft-database")
-    suspend fun getUpdates(): VersionInfo
-}
-
 object ApiClient {
-    const val UPDATE_URL = "https://api.github.com/"
-    const val BASE_URL = "https://raw.githubusercontent.com/EXBO-Studio/stalcraft-database/main/ru/"
+    private const val GITHUB_BASE_URL = "https://api.github.com/"
+    private const val DATABASE_BASE_URL = "https://raw.githubusercontent.com/EXBO-Studio/stalcraft-database/main/ru/"
 
-    val instance: ApiService by lazy {
+    val githubApi: GitHubApiService by lazy {
         Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create(GsonProvider.instance))
-            .build()
-            .create(ApiService::class.java)
-    }
-
-    val updInstance: GitHubService by lazy {
-        Retrofit.Builder()
-            .baseUrl(UPDATE_URL)
+            .baseUrl(GITHUB_BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(GitHubService::class.java)
+            .create(GitHubApiService::class.java)
+    }
+
+    val databaseApi: DatabaseApiService by lazy {
+        Retrofit.Builder()
+            .baseUrl(DATABASE_BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create(GsonProvider.instance))
+            .build()
+            .create(DatabaseApiService::class.java)
     }
 }

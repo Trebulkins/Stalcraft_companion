@@ -12,22 +12,34 @@ private const val TAG = "ItemRepository"
 class ItemRepository(private val itemDao: ItemDao) {
     fun getAllItems(): Flow<List<Item>> = itemDao.getAllItems()
 
-    suspend fun needsUpdate(gitHubService: GitHubService, context: Context): Boolean {
-        val remoteInfo = gitHubService.getUpdates()
-        val localUpdate = Prefs.getLastUpdate(context)
-        return localUpdate == null || remoteInfo.updatedAt > localUpdate
+    suspend fun needsUpdate(context: Context): Boolean {
+        return try {
+            val remoteInfo = ApiClient.githubApi.getRepoInfo()
+            val localUpdate = Prefs.getLastUpdate(context)
+            localUpdate == null || remoteInfo.updatedAt > localUpdate
+        } catch (e: Exception) {
+            false
+        }
     }
 
-    suspend fun refreshData(apiService: ApiService, gitHubService: GitHubService, context: Context) {
+    suspend fun refreshData(context: Context, progressCallback: (Int, Int) -> Unit) {
         try {
-            val items = apiService.getItemsListing().map { apiService.getItem(it.data) }
-            withContext(Dispatchers.IO) {
-                itemDao.clearAll()
-                itemDao.insertAll(items)
+            val listings = ApiClient.databaseApi.getItemListings()
+            val totalItems = listings.size
+            val items = mutableListOf<Item>()
+
+            listings.forEachIndexed { index, listing ->
+                val item = ApiClient.databaseApi.getItem(listing.data)
+                items.add(item)
+                progressCallback(index + 1, totalItems)
             }
-            Prefs.setLastUpdate(context, gitHubService.getUpdates().updatedAt)
+
+            itemDao.clearAll()
+            itemDao.insertAll(items)
+
+            val repoInfo = ApiClient.githubApi.getRepoInfo()
+            Prefs.setLastUpdate(context, repoInfo.updatedAt)
         } catch (e: Exception) {
-            Log.e("API_ERROR", "Failed to parse: ${e.message}")
             throw e
         }
     }
