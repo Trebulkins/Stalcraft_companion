@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.stalcraft_companion.R
+import com.example.stalcraft_companion.data.modles.Item
 import com.example.stalcraft_companion.databinding.ActivityMainBinding
 import com.example.stalcraft_companion.ui.NetworkUtils.isNetworkAvailable
 import com.google.android.material.snackbar.Snackbar
@@ -30,6 +31,21 @@ class MainActivity : AppCompatActivity(), UpdateDialog.UpdateListener {
         viewModel = ViewModelProvider(this)[ItemViewModel::class.java]
 
         checkForUpdates()
+    }
+
+    override fun onItemSelected(item: Item) {
+        if (isLandscape) {
+            // В альбомной ориентации заменяем DetailsFragment
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.details_container, DetailsFragment.newInstance(item))
+                .commit()
+        } else {
+            // В портретной ориентации заменяем MainFragment на DetailsFragment
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.main_container, DetailsFragment.newInstance(item))
+                .addToBackStack("item_detail") // Добавляем в back stack для возврата
+                .commit()
+        }
     }
 
     private fun checkForUpdates() {
@@ -102,5 +118,18 @@ class MainActivity : AppCompatActivity(), UpdateDialog.UpdateListener {
         supportFragmentManager.beginTransaction()
             .replace(R.id.main_container, MainFragment.newInstance())
             .commit()
+    }
+
+    override fun onBackPressed() {
+        if (isLandscape) {
+            super.onBackPressed()
+        } else {
+            // В портретной ориентации проверяем, есть ли фрагменты в back stack
+            if (supportFragmentManager.backStackEntryCount > 0) {
+                supportFragmentManager.popBackStack()
+            } else {
+                super.onBackPressed()
+            }
+        }
     }
 }
