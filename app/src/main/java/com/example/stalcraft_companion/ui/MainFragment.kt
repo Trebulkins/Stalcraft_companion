@@ -8,11 +8,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.stalcraft_companion.data.modles.CategoryGroup
 import com.example.stalcraft_companion.data.modles.Item
-import com.example.stalcraft_companion.data.modles.SubcategoryGroup
 import com.example.stalcraft_companion.databinding.FragmentMainBinding
-import com.google.android.material.snackbar.Snackbar
 
 class MainFragment : Fragment() {
     interface OnItemSelectedListener {
@@ -49,23 +46,9 @@ class MainFragment : Fragment() {
             adapter = this@MainFragment.adapter
         }
 
-        viewModel.error.observe(viewLifecycleOwner) { error ->
-            error?.let {
-                Snackbar.make(binding.root, it, Snackbar.LENGTH_LONG).show()
-            }
-        }
-
         viewModel.items.observe(viewLifecycleOwner) { items ->
             if (items.isNotEmpty()) {
-                val categories = items.groupBy { it.category }.map { (category, items) ->
-                    CategoryGroup(
-                        categoryName = category,
-                        subcategories = items.groupBy { it.subcategory }.map { (subcategory, items) ->
-                            SubcategoryGroup(subcategory, items)
-                        }
-                    )
-                }
-                adapter.submitList(categories)
+                adapter.submitItems(items)
             }
         }
     }

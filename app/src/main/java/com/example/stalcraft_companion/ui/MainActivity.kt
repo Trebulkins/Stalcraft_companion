@@ -2,6 +2,7 @@ package com.example.stalcraft_companion.ui
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -33,7 +34,7 @@ class MainActivity : AppCompatActivity(), UpdateDialog.UpdateListener {
 
     private fun checkForUpdates() {
         if (!isNetworkAvailable(this)) {
-            showError("No internet connection")
+            showError("Нет подключения к интернету")
             loadData()
             return
         }
@@ -50,7 +51,8 @@ class MainActivity : AppCompatActivity(), UpdateDialog.UpdateListener {
                     loadData()
                 }
             } catch (e: Exception) {
-                showError("Error checking updates")
+                showError("Ошибка обновления: $e")
+                Log.e(TAG, "Update error: $e")
                 loadData()
             }
         }

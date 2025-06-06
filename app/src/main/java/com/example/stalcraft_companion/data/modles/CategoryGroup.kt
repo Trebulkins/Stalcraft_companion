@@ -3,8 +3,7 @@ package com.example.stalcraft_companion.data.modles
 data class CategoryGroup(
     val categoryName: String,
     val subcategories: List<SubcategoryGroup>,
-    val isCategory: Boolean = true,
-    val isSubcategory: Boolean = false
+    val items: List<Item>
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -20,7 +19,5 @@ data class CategoryGroup(
 
 data class SubcategoryGroup(
     val subcategoryName: String,
-    val items: List<Item>,
-    val isCategory: Boolean = false,
-    val isSubcategory: Boolean = true
+    val items: List<Item>
 )

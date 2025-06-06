@@ -23,7 +23,7 @@ interface DatabaseApiService {
 
 object ApiClient {
     private const val GITHUB_BASE_URL = "https://api.github.com/"
-    private const val DATABASE_BASE_URL = "https://raw.githubusercontent.com/EXBO-Studio/stalcraft-database/main/ru/"
+    const val DATABASE_BASE_URL = "https://raw.githubusercontent.com/EXBO-Studio/stalcraft-database/main/ru/"
 
     val githubApi: GitHubApiService by lazy {
         Retrofit.Builder()

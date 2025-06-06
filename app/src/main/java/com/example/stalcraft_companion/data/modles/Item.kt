@@ -18,7 +18,9 @@ data class Item (
     @Expose @SerializedName("status") var status: StatusObject,
     @Expose @SerializedName("infoBlocks") var infoBlocks: List<InfoBlock>?
 ): Parcelable {
-    val subcategory get() = category.substringAfter('/', missingDelimiterValue = "")
+    val maincategory get() = category.substringBefore('/', missingDelimiterValue = category)
+    val subcategory get() = category.substringAfter('/', missingDelimiterValue = "<No subcategory>")
+    val iconPath get() = "icons/$category/$name.png"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
