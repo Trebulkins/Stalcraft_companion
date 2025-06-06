@@ -1,5 +1,6 @@
 package com.example.stalcraft_companion.data
 
+import android.util.Log
 import com.example.stalcraft_companion.data.modles.FormattedObject
 import com.example.stalcraft_companion.data.modles.InfoBlock
 import com.example.stalcraft_companion.data.modles.TranslationLines
@@ -11,6 +12,7 @@ import com.google.gson.JsonParseException
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
 
+private const val TAG = "InfoBlockDeserializer"
 class InfoBlockDeserializer : JsonDeserializer<InfoBlock> {
     override fun deserialize(
         json: JsonElement,
@@ -65,7 +67,7 @@ class TranslationStringDeserializer: JsonDeserializer<TranslationString> {
         json: JsonElement,
         typeOfT: Type,
         context: JsonDeserializationContext
-    ): TranslationString {
+    ): TranslationString? {
         val jsonObject = json.asJsonObject
         return when (jsonObject.get("type")?.asString) {
             "text" -> TranslationString.Text(
@@ -74,6 +76,7 @@ class TranslationStringDeserializer: JsonDeserializer<TranslationString> {
             "translation" -> TranslationString.Translation(
                 lines = context.deserialize(jsonObject.get("lines"), TranslationLines::class.java)
             )
+            null -> null
             else -> throw JsonParseException("Unknown type: ${jsonObject.get("type")} on JsonObject (TranslationString): $jsonObject")
         }
     }

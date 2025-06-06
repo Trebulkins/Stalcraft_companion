@@ -16,20 +16,17 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+private const val TAG = "ItemViewModel"
 class ItemViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: ItemRepository
     val items: LiveData<List<Item>>
     val isLoading = MutableLiveData(false)
     val error = MutableLiveData<String?>()
-    val isEmpty = MutableLiveData<Boolean>()
 
     init {
         val dao = AppDatabase.getInstance(application).itemDao()
         repository = ItemRepository(dao)
-        items = repository.getAllItems().map { items ->
-            isEmpty.postValue(items.isEmpty())
-            items
-        }.asLiveData()
+        items = repository.getAllItems().asLiveData()
     }
 
     val progress = MutableLiveData<Pair<Int, Int>>()
@@ -46,16 +43,23 @@ class ItemViewModel(application: Application) : AndroidViewModel(application) {
 
     fun performUpdate() {
         isLoading.value = true
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 repository.refreshData(getApplication()) { current, total ->
                     progress.postValue(Pair(current, total))
                 }
-                error.value = null
+                withContext(Dispatchers.Main) {
+                    error.value = null
+                }
             } catch (e: Exception) {
-                error.value = "Update failed: ${e.message}"
+                withContext(Dispatchers.Main) {
+                    error.value = "Update failed: ${e.message}"
+                    Log.e(TAG, "Update failed: ${e.message}")
+                }
             } finally {
-                isLoading.value = false
+                withContext(Dispatchers.Main) {
+                    isLoading.value = false
+                }
             }
         }
     }

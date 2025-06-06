@@ -9,7 +9,9 @@ import com.example.stalcraft_companion.R
 import com.example.stalcraft_companion.databinding.ActivityMainBinding
 import com.example.stalcraft_companion.ui.NetworkUtils.isNetworkAvailable
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 private const val TAG = "MainActivity"
 class MainActivity : AppCompatActivity(), UpdateDialog.UpdateListener {
@@ -37,10 +39,18 @@ class MainActivity : AppCompatActivity(), UpdateDialog.UpdateListener {
         }
 
         lifecycleScope.launch {
-            val needsUpdate = viewModel.checkForUpdates()
-            if (needsUpdate) {
-                showUpdateDialog()
-            } else {
+            try {
+                val needsUpdate = withContext(Dispatchers.IO) {
+                    viewModel.checkForUpdates()
+                }
+
+                if (needsUpdate) {
+                    showUpdateDialog()
+                } else {
+                    loadData()
+                }
+            } catch (e: Exception) {
+                showError("Error checking updates")
                 loadData()
             }
         }
@@ -61,8 +71,8 @@ class MainActivity : AppCompatActivity(), UpdateDialog.UpdateListener {
         }
 
         viewModel.performUpdate()
-        viewModel.items.observe(this) { items ->
-            if (items.isNotEmpty()) {
+        viewModel.isLoading.observe(this) { loading ->
+            if (!loading) {
                 progressDialog?.dismiss()
                 showMainFragment()
             }

@@ -49,7 +49,7 @@ class UpdateDialog : DialogFragment() {
         }
         return SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
             .format(SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
-                .parse(repoInfo.updatedAt) ?: Date()
+                .parse(repoInfo.updatedAt.toString()) ?: Date()
             )
     }
 }

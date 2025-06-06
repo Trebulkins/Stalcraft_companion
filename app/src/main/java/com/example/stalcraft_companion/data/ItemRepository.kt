@@ -10,8 +10,6 @@ import kotlinx.coroutines.withContext
 
 private const val TAG = "ItemRepository"
 class ItemRepository(private val itemDao: ItemDao) {
-    fun getAllItems(): Flow<List<Item>> = itemDao.getAllItems()
-
     suspend fun needsUpdate(context: Context): Boolean {
         return try {
             val remoteInfo = ApiClient.githubApi.getRepoInfo()
@@ -44,11 +42,11 @@ class ItemRepository(private val itemDao: ItemDao) {
         }
     }
 
-    suspend fun getItemById(id: String): Item? {
-        return withContext(Dispatchers.IO) {
-            itemDao.getItemById(id)
-        }
+    suspend fun getItemById(id: String): Item? = withContext(Dispatchers.IO) {
+        itemDao.getItemById(id)
     }
+
+    fun getAllItems(): Flow<List<Item>> = itemDao.getAllItems()
 
     fun insertAll(items: MutableList<Item>) {
         itemDao.insertAll(items)

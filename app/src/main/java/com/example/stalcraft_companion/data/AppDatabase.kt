@@ -22,7 +22,10 @@ abstract class AppDatabase : RoomDatabase() {
           context.applicationContext,
           AppDatabase::class.java,
           "items.db"
-        ).build().also { INSTANCE = it }
+        )
+          .allowMainThreadQueries()
+          .build()
+          .also { INSTANCE = it }
       }
     }
   }

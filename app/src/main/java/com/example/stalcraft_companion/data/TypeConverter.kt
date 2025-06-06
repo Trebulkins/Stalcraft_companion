@@ -3,6 +3,7 @@ package com.example.stalcraft_companion.data
 import androidx.room.TypeConverter
 import com.example.stalcraft_companion.data.modles.InfoBlock
 import com.example.stalcraft_companion.data.modles.StatusObject
+import com.example.stalcraft_companion.data.modles.TranslationLines
 import com.example.stalcraft_companion.data.modles.TranslationString
 import com.google.gson.reflect.TypeToken
 
@@ -13,8 +14,18 @@ class TypeConverter {
   }
 
   @TypeConverter
-  fun toTranslationString(value: String): TranslationString {
+  fun toTranslationString(value: String): TranslationString? {
     return GsonProvider.instance.fromJson(value, TranslationString::class.java)
+  }
+
+  @TypeConverter
+  fun fromTranslationLines(value: TranslationLines): String {
+    return GsonProvider.instance.toJson(value)
+  }
+
+  @TypeConverter
+  fun toTranslationLines(value: String): TranslationLines {
+    return GsonProvider.instance.fromJson(value, TranslationLines::class.java)
   }
 
   @TypeConverter

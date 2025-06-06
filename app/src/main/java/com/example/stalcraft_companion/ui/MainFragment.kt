@@ -17,8 +17,6 @@ import com.google.android.material.snackbar.Snackbar
 class MainFragment : Fragment() {
     interface OnItemSelectedListener {
         fun onItemSelected(item: Item)
-        fun onUpdateConfirmed()
-        fun onUpdateCancelled()
     }
 
     private lateinit var binding: FragmentMainBinding
