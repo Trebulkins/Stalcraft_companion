@@ -52,13 +52,11 @@ class ItemViewModel(application: Application) : AndroidViewModel(application) {
                         items.add(item)
                         loadedItems.value = index + 1
                         progressPercentage.value = ((index + 1) * 100 / itemListings.size)
+                        repository.insertItem(item)
                     } catch (e: Exception) {
                         Log.e("ItemLoad", "Error loading item ${listing.id}", e)
                     }
                 }
-
-                // 3. Сохраняем в базу
-                repository.insertAll(items)
                 progressPercentage.value = 100
             } catch (e: Exception) {
                 error.value = "Ошибка загрузки: ${e.message}"

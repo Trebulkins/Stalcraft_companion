@@ -6,11 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.stalcraft_companion.R
 import com.example.stalcraft_companion.data.modles.CategoryGroup
 import com.example.stalcraft_companion.data.modles.Item
 import com.example.stalcraft_companion.data.modles.SubcategoryGroup
@@ -50,11 +47,6 @@ class MainFragment : Fragment() {
         binding.mainRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = this@MainFragment.adapter
-        }
-
-        // Наблюдаем за состояниями
-        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
 
         viewModel.error.observe(viewLifecycleOwner) { error ->

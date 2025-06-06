@@ -2,6 +2,7 @@ package com.example.stalcraft_companion.ui
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.stalcraft_companion.R
@@ -24,6 +25,7 @@ class MainActivity : AppCompatActivity(), MainFragment.OnItemSelectedListener {
         viewModel = ViewModelProvider(this)[ItemViewModel::class.java]
 
         // Загрузка данных при старте
+        setupProgressObservers()
         loadInitialData()
 
         if (savedInstanceState == null) {
@@ -38,6 +40,24 @@ class MainActivity : AppCompatActivity(), MainFragment.OnItemSelectedListener {
             }
         }
     }
+
+    private fun setupProgressObservers() {
+        viewModel.progressPercentage.observe(this) { percent ->
+            binding.progressBar!!.progress = percent
+            binding.progressText!!.text = "[ $percent% ]"
+        }
+
+        viewModel.loadedItems.observe(this) { loaded ->
+            viewModel.totalItems.value?.let { total ->
+                binding.progressCount!!.text = "Загружено $loaded / $total"
+            }
+        }
+
+        viewModel.isLoading.observe(this) { loading ->
+            binding.LoadingLayout!!.visibility = if (loading) View.VISIBLE else View.GONE
+        }
+    }
+
 
     override fun onItemSelected(item: Item) {
         if (isLandscape) {

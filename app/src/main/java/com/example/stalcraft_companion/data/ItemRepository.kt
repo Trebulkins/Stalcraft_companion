@@ -25,4 +25,8 @@ class ItemRepository(private val itemDao: ItemDao) {
     fun insertAll(items: MutableList<Item>) {
         itemDao.insertAll(items)
     }
+
+    fun insertItem(item: Item) {
+        itemDao.insert(item)
+    }
 }
