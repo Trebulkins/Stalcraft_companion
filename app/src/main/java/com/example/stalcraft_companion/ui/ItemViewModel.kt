@@ -10,10 +10,13 @@ import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.example.stalcraft_companion.data.ApiService
 import com.example.stalcraft_companion.data.AppDatabase
+import com.example.stalcraft_companion.data.GitHubService
 import com.example.stalcraft_companion.data.modles.Item
 import com.example.stalcraft_companion.data.ItemRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ItemViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: ItemRepository
@@ -36,6 +39,16 @@ class ItemViewModel(application: Application) : AndroidViewModel(application) {
         }.asLiveData()
     }
 
+    suspend fun checkForUpdates(gitHubService: GitHubService): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                repository.needsUpdate(gitHubService, getApplication())
+            } catch (e: Exception) {
+                false
+            }
+        }
+    }
+
     fun refreshData(apiService: ApiService) {
         isLoading.value = true
         viewModelScope.launch {
@@ -52,10 +65,10 @@ class ItemViewModel(application: Application) : AndroidViewModel(application) {
                         items.add(item)
                         loadedItems.value = index + 1
                         progressPercentage.value = ((index + 1) * 100 / itemListings.size)
-                        repository.insertItem(item)
                     } catch (e: Exception) {
-                        Log.e("ItemLoad", "Error loading item ${listing.id}", e)
+                        Log.e("ItemLoad", "Error loading itemId ${listing.id}: ", e)
                     }
+                    repository.insertAll(items)
                 }
                 progressPercentage.value = 100
             } catch (e: Exception) {

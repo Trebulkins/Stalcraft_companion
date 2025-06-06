@@ -6,8 +6,9 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.stalcraft_companion.data.modles.Item
+import com.example.stalcraft_companion.data.modles.VersionInfo
 
-@Database(entities = [Item::class], version = 1)
+@Database(entities = [Item::class, VersionInfo::class], version = 1)
 @TypeConverters(TypeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
   abstract fun itemDao(): ItemDao
