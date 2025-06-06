@@ -8,9 +8,41 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stalcraft_companion.R
 import com.example.stalcraft_companion.data.ApiClient
+import com.example.stalcraft_companion.data.modles.CategoryGroup
 import com.example.stalcraft_companion.data.modles.Item
+import com.example.stalcraft_companion.data.modles.SubcategoryGroup
 import com.example.stalcraft_companion.data.modles.TranslationString
 import com.squareup.picasso.Picasso
+
+object CategoryUtils {
+    fun getMainCategory(fullCategory: String): String {
+        return fullCategory.split('/').first()
+    }
+
+    fun getSubcategory(fullCategory: String): String? {
+        val parts = fullCategory.split('/')
+        return if (parts.size > 1) parts[1] else null
+    }
+
+    fun groupItemsByCategories(items: List<Item>): List<CategoryGroup> {
+        return items.groupBy { getMainCategory(it.category) }
+            .map { (mainCategory, items) ->
+                val subcategories = items
+                    .filter { getSubcategory(it.category) != null }
+                    .groupBy { getSubcategory(it.category)!! }
+                    .map { (subcategory, items) -> SubcategoryGroup(subcategory, items) }
+
+                val itemsWithoutSubcategory = items.filter { getSubcategory(it.category) == null }
+
+                CategoryGroup(
+                    mainCategory = mainCategory,
+                    subcategories = subcategories,
+                    directItems = itemsWithoutSubcategory
+                )
+            }
+            .sortedBy { it.mainCategory }
+    }
+}
 
 class CategoryAdapter(
     private val onItemClick: (Item) -> Unit
@@ -23,67 +55,22 @@ class CategoryAdapter(
     }
 
     private var items: List<Any> = emptyList()
-    private var expandedCategories = mutableSetOf<String>()
-    private var expandedSubcategories = mutableSetOf<String>()
+    private var expandedCategory: String? = null
 
-    fun submitItems(allItems: List<Item>) {
-        val categories = parseItemsToCategories(allItems)
-        buildDisplayList(categories)
-    }
-
-    private fun parseItemsToCategories(items: List<Item>): Map<String, Category> {
-        val categories = mutableMapOf<String, Category>()
-
-        items.forEach { item ->
-            val (mainCat, subCat) = parseCategory(item.category)
-
-            if (!categories.containsKey(mainCat)) {
-                categories[mainCat] = Category(mainCat, mutableMapOf())
-            }
-
-            if (subCat != null) {
-                if (!categories[mainCat]!!.subcategories.containsKey(subCat)) {
-                    categories[mainCat]!!.subcategories[subCat] = mutableListOf()
-                }
-                categories[mainCat]!!.subcategories[subCat]!!.add(item)
-            } else {
-                if (!categories[mainCat]!!.subcategories.containsKey("")) {
-                    categories[mainCat]!!.subcategories[""] = mutableListOf()
-                }
-                categories[mainCat]!!.subcategories[""]!!.add(item)
-            }
-        }
-
-        return categories
-    }
-
-    private fun parseCategory(fullCategory: String): Pair<String, String?> {
-        return if (fullCategory.contains("/")) {
-            val parts = fullCategory.split("/")
-            parts[0] to parts[1]
-        } else {
-            fullCategory to null
-        }
-    }
-
-    private fun buildDisplayList(categories: Map<String, Category>) {
+    fun submitCategories(categories: List<CategoryGroup>) {
         val newItems = mutableListOf<Any>()
 
-        categories.keys.sorted().forEach { categoryName ->
-            val category = categories[categoryName]!!
+        categories.forEach { category ->
             newItems.add(category)
 
-            if (categoryName in expandedCategories) {
-                category.subcategories.keys.sorted().forEach { subcategoryName ->
-                    if (subcategoryName.isNotEmpty()) {
-                        newItems.add(Subcategory(categoryName, subcategoryName))
+            if (category.mainCategory == expandedCategory) {
+                if (category.directItems.isNotEmpty()) {
+                    newItems.addAll(category.directItems)
+                }
 
-                        if ("$categoryName/$subcategoryName" in expandedSubcategories) {
-                            newItems.addAll(category.subcategories[subcategoryName]!!)
-                        }
-                    } else {
-                        newItems.addAll(category.subcategories[""]!!)
-                    }
+                category.subcategories.forEach { subcategory ->
+                    newItems.add(subcategory)
+                    newItems.addAll(subcategory.items)
                 }
             }
         }
@@ -94,8 +81,8 @@ class CategoryAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (items[position]) {
-            is Category -> TYPE_CATEGORY
-            is Subcategory -> TYPE_SUBCATEGORY
+            is CategoryGroup -> TYPE_CATEGORY
+            is SubcategoryGroup -> TYPE_SUBCATEGORY
             is Item -> TYPE_ITEM
             else -> throw IllegalArgumentException("Unknown type")
         }
@@ -127,86 +114,55 @@ class CategoryAdapter(
     }
 
     private fun bindCategory(holder: CategoryViewHolder, position: Int) {
-        val category = items[position] as Category
-        holder.bind(category.name)
+        val category = items[position] as CategoryGroup
+        holder.bind(category.mainCategory)
 
         holder.itemView.setOnClickListener {
-            if (category.name in expandedCategories) {
-                expandedCategories.remove(category.name)
-                expandedSubcategories.removeAll { it.startsWith("${category.name}/") }
+            expandedCategory = if (expandedCategory == category.mainCategory) {
+                null
             } else {
-                expandedCategories.add(category.name)
+                category.mainCategory
             }
-            submitItems(items.filterIsInstance<Item>())
+            submitCategories(items.filterIsInstance<CategoryGroup>())
         }
     }
 
     private fun bindSubcategory(holder: SubcategoryViewHolder, position: Int) {
-        val subcategory = items[position] as Subcategory
-        holder.bind(subcategory.name)
-
-        holder.itemView.setOnClickListener {
-            val fullPath = "${subcategory.parentCategory}/${subcategory.name}"
-            if (fullPath in expandedSubcategories) {
-                expandedSubcategories.remove(fullPath)
-            } else {
-                expandedSubcategories.add(fullPath)
-            }
-            submitItems(items.filterIsInstance<Item>())
-        }
+        val subcategory = items[position] as SubcategoryGroup
+        holder.bind(subcategory.subcategoryName)
     }
 
     private fun bindItem(holder: ItemViewHolder, position: Int) {
         val item = items[position] as Item
         holder.bind(item)
-
-        holder.itemView.setOnClickListener {
-            onItemClick(item)
-        }
+        holder.itemView.setOnClickListener { onItemClick(item) }
     }
 
     override fun getItemCount(): Int = items.size
 
     inner class CategoryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private val title: TextView = view.findViewById(R.id.tvTitle)
-        fun bind(name: String) {
-            title.text = name
+        fun bind(title: String) {
+            itemView.findViewById<TextView>(R.id.tvTitle).text = title
         }
     }
 
     inner class SubcategoryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private val title: TextView = view.findViewById(R.id.tvTitle)
-        fun bind(name: String) {
-            title.text = name
+        fun bind(title: String) {
+            itemView.findViewById<TextView>(R.id.tvTitle).text = title
         }
     }
 
     inner class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private val name: TextView = view.findViewById(R.id.item_title)
-        private val category: TextView = view.findViewById(R.id.item_category)
-        private val colorIndicator: View = view.findViewById(R.id.item_rarity_color)
-        private val state: TextView = view.findViewById(R.id.item_state)
-        private val icon: ImageView = view.findViewById(R.id.item_icon)
-
         fun bind(item: Item) {
-            name.text = when (val name = item.name) {
+            itemView.findViewById<TextView>(R.id.item_title).text = when (val name = item.name) {
                 is TranslationString.Text -> name.text
                 is TranslationString.Translation -> name.lines.ru
             }
-            category.text = item.category.split("/")[0]
-            colorIndicator.setBackgroundColor(0xF0F)
-            state.text = item.status.state
-            Picasso.get().load(ApiClient.DATABASE_BASE_URL + item.iconPath).into(icon)
+            itemView.findViewById<TextView>(R.id.item_category).text = item.category
+            itemView.findViewById<View>(R.id.item_rarity_color).setBackgroundColor(0x000)
+            itemView.findViewById<TextView>(R.id.item_state).text = item.status.state
+            Picasso.get().load(ApiClient.DATABASE_BASE_URL + item.iconPath).into(itemView.findViewById<ImageView>(R.id.item_icon))
+            itemView.setOnClickListener { onItemClick(item) }
         }
     }
 }
-
-data class Category(
-    val name: String,
-    val subcategories: MutableMap<String, MutableList<Item>>
-)
-
-data class Subcategory(
-    val parentCategory: String,
-    val name: String
-)
