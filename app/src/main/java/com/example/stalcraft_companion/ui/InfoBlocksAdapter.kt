@@ -4,6 +4,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.graphics.toColorInt
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stalcraft_companion.R
 import com.example.stalcraft_companion.data.modles.InfoBlock
@@ -21,6 +23,7 @@ class InfoBlocksAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         private const val TYPE_RANGE = 5
         private const val TYPE_USAGE= 6
         private const val TYPE_ITEM = 7
+        private const val TYPE_UNKNOWN = -1
     }
 
     fun submitList(newItems: List<InfoBlock>) {
@@ -41,29 +44,32 @@ class InfoBlocksAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             )
             TYPE_RANGE -> RangeBlockViewHolder(
                 LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_infoblock_text, parent, false)
+                    .inflate(R.layout.item_infoblock_keyvalue, parent, false)
             )
             TYPE_LIST -> ListBlockViewHolder(
                 LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_infoblock_text, parent, false)
+                    .inflate(R.layout.item_infoblock_list, parent, false)
             )
             TYPE_KEY_VALUE -> KeyValueBlockViewHolder(
                 LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_infoblock_text, parent, false)
+                    .inflate(R.layout.item_infoblock_keyvalue, parent, false)
             )
             TYPE_NUMERIC -> NumericBlockViewHolder(
                 LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_infoblock_text, parent, false)
+                    .inflate(R.layout.item_infoblock_keyvalue, parent, false)
             )
             TYPE_USAGE -> UsageBlockViewHolder(
                 LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_infoblock_text, parent, false)
+                    .inflate(R.layout.item_infoblock_keyvalue, parent, false)
             )
             TYPE_ITEM -> ItemBlockViewHolder(
                 LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_infoblock_text, parent, false)
+                    .inflate(R.layout.item_infoblock_keyvalue, parent, false)
             )
-            else -> throw IllegalArgumentException("Unknown view type")
+            else -> UnkbownBlockViewHolder(
+                LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_infoblock_keyvalue, parent, false)
+            )
         }
     }
 
@@ -77,6 +83,7 @@ class InfoBlocksAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             is RangeBlockViewHolder -> holder.bind(items[position] as InfoBlock.RangeBlock)
             is UsageBlockViewHolder -> holder.bind(items[position] as InfoBlock.UsageBlock)
             is ItemBlockViewHolder -> holder.bind(items[position] as InfoBlock.ItemBlock)
+            else -> return
         }
     }
 
@@ -92,6 +99,7 @@ class InfoBlocksAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             is InfoBlock.ListBlock -> TYPE_LIST
             is InfoBlock.NumericBlock -> TYPE_NUMERIC
             is InfoBlock.UsageBlock -> TYPE_USAGE
+            else -> TYPE_UNKNOWN
         }
     }
 
@@ -145,16 +153,31 @@ class InfoBlocksAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 is TranslationString.Translation -> name.lines.ru
             }
             itemView.findViewById<TextView>(R.id.text).text = block.formatted.value.ru
+            itemView.findViewById<TextView>(R.id.text).setTextColor(android.graphics.Color.parseColor("#${block.formatted.valueColor}"))
         }
     }
 
     inner class ListBlockViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        fun bind(block: InfoBlock.ListBlock) {
-            itemView.findViewById<TextView>(R.id.title).text = when (val name = block.title) {
-                is TranslationString.Text -> name.text
-                is TranslationString.Translation -> name.lines.ru
+        private val title: TextView = view.findViewById(R.id.list_title)
+        private val recycler: RecyclerView = view.findViewById(R.id.list_recycler)
+        private val adapter = InfoBlocksAdapter()
+
+        init {
+            recycler.apply {
+                layoutManager = LinearLayoutManager(context)
+                adapter = this@ListBlockViewHolder.adapter
+                isNestedScrollingEnabled = false
             }
-            itemView.findViewById<TextView>(R.id.text).text = "[Список]"
+        }
+
+        fun bind(block: InfoBlock.ListBlock) {
+            if (!block.elements.isNullOrEmpty()) {
+                title.text = when (val titleText = block.title) {
+                    is TranslationString.Text -> titleText.text
+                    is TranslationString.Translation -> titleText.lines.ru
+                }
+                block.elements.let { adapter.submitList(it) }
+            }
         }
     }
 
@@ -178,5 +201,8 @@ class InfoBlocksAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 is TranslationString.Translation -> name.lines.ru
             }
         }
+    }
+
+    inner class UnkbownBlockViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     }
 }

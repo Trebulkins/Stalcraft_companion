@@ -1,5 +1,6 @@
 package com.example.stalcraft_companion.ui
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,6 +46,7 @@ object CategoryUtils {
 }
 
 class CategoryAdapter(
+    private val context: Context,
     private val onItemClick: (Item) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     companion object {
@@ -157,12 +159,38 @@ class CategoryAdapter(
                 is TranslationString.Text -> name.text
                 is TranslationString.Translation -> name.lines.ru
             }
+            when (item.color) {
+                "DEFAULT" -> {
+                    itemView.findViewById<TextView>(R.id.item_title).setTextColor(android.graphics.Color.parseColor("#eeeeee"))
+                    itemView.findViewById<View>(R.id.item_rarity_color).setBackgroundColor(android.graphics.Color.parseColor("#eeeeee"))
+                }
+                "RANK_NEWBIE" -> {
+                    itemView.findViewById<TextView>(R.id.item_title).setTextColor(android.graphics.Color.parseColor("#7def7d"))
+                    itemView.findViewById<View>(R.id.item_rarity_color).setBackgroundColor(android.graphics.Color.parseColor("#7def7d"))
+                }
+                "RANK_STALKER" -> {
+                    itemView.findViewById<TextView>(R.id.item_title).setTextColor(android.graphics.Color.parseColor("#8d8dff"))
+                    itemView.findViewById<View>(R.id.item_rarity_color).setBackgroundColor(android.graphics.Color.parseColor("#8d8dff"))
+                }
+                "RANK_VETERAN" -> {
+                    itemView.findViewById<TextView>(R.id.item_title).setTextColor(android.graphics.Color.parseColor("#d968c4"))
+                    itemView.findViewById<View>(R.id.item_rarity_color).setBackgroundColor(android.graphics.Color.parseColor("#d968c4"))
+                }
+                "RANK_MASTER" -> {
+                    itemView.findViewById<TextView>(R.id.item_title).setTextColor(android.graphics.Color.parseColor("#ff5767"))
+                    itemView.findViewById<View>(R.id.item_rarity_color).setBackgroundColor(android.graphics.Color.parseColor("#ff5767"))
+                }
+                "RANK_LEGEND" -> {
+                    itemView.findViewById<TextView>(R.id.item_title).setTextColor(android.graphics.Color.parseColor("#ffdd66"))
+                    itemView.findViewById<View>(R.id.item_rarity_color).setBackgroundColor(android.graphics.Color.parseColor("#ffdd66"))
+                }
+            }
             itemView.findViewById<TextView>(R.id.item_category).text = item.category
-            itemView.findViewById<View>(R.id.item_rarity_color).setBackgroundColor(0x000)
             itemView.findViewById<TextView>(R.id.item_state).text = item.status.state
             Picasso.get().load(ApiClient.DATABASE_BASE_URL + item.iconPath).into(itemView.findViewById<ImageView>(R.id.item_icon))
+
             itemView.setOnClickListener {
-                onItemClick(item) // Передаем кликнутый item
+                onItemClick(item)
             }
         }
     }

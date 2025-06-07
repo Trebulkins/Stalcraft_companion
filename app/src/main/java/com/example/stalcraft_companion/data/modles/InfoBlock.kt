@@ -71,5 +71,6 @@ sealed class InfoBlock : Parcelable {
 
 @Parcelize
 data class FormattedObject(
-    @Expose @SerializedName("value") val value: TranslationLines
+    @Expose @SerializedName("value") val value: TranslationLines,
+    @Expose @SerializedName("valueColor") val valueColor: String
 ) : Parcelable

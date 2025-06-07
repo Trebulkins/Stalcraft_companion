@@ -12,7 +12,6 @@ import com.google.gson.JsonParseException
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
 
-private const val TAG = "InfoBlockDeserializer"
 class InfoBlockDeserializer : JsonDeserializer<InfoBlock> {
     override fun deserialize(
         json: JsonElement,

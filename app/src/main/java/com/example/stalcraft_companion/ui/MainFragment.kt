@@ -43,11 +43,9 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel = ViewModelProvider(requireActivity())[ItemViewModel::class.java]
-        adapter = CategoryAdapter { item ->
-            // Передаем выбранный item в listener (Activity)
+        adapter = CategoryAdapter(requireContext()) { item ->
             listener?.onItemSelected(item)
         }
-
         binding.mainRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = this@MainFragment.adapter

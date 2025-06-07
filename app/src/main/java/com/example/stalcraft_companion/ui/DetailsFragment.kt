@@ -6,9 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.stalcraft_companion.R
+import com.example.stalcraft_companion.data.ApiClient
 import com.example.stalcraft_companion.data.modles.Item
 import com.example.stalcraft_companion.data.modles.TranslationString
 import com.example.stalcraft_companion.databinding.FragmentDetailsBinding
+import com.squareup.picasso.Picasso
 
 class DetailsFragment : Fragment() {
     private lateinit var binding: FragmentDetailsBinding
@@ -56,7 +59,7 @@ class DetailsFragment : Fragment() {
 
         currentItem?.let { bindItemDetails(it) }
 
-        binding.leaveLayout.setOnClickListener {
+        binding.leaveLayout?.setOnClickListener {
             parentFragmentManager.popBackStack()
         }
     }
@@ -67,9 +70,35 @@ class DetailsFragment : Fragment() {
                 is TranslationString.Text -> name.text
                 is TranslationString.Translation -> name.lines.ru
             }
-            itemCategory.text = CategoryUtils.getMainCategory(item.category)
-            itemRarityColor.setBackgroundColor(0x000)
+            itemCategory.text = item.category
+            when (item.color) {
+                "DEFAULT" -> {
+                    itemTitle.setTextColor(resources.getColor(R.color.DEFAULT))
+                    itemRarityColor.setBackgroundColor(resources.getColor(R.color.DEFAULT))
+                }
+                "RANK_NEWBIE" -> {
+                    itemTitle.setTextColor(resources.getColor(R.color.RANK_NEWBIE))
+                    itemRarityColor.setBackgroundColor(resources.getColor(R.color.RANK_NEWBIE))
+                }
+                "RANK_STALKER" -> {
+                    itemTitle.setTextColor(resources.getColor(R.color.RANK_STALKER))
+                    itemRarityColor.setBackgroundColor(resources.getColor(R.color.RANK_STALKER))
+                }
+                "RANK_VETERAN" -> {
+                    itemTitle.setTextColor(resources.getColor(R.color.RANK_VETERAN))
+                    itemRarityColor.setBackgroundColor(resources.getColor(R.color.RANK_VETERAN))
+                }
+                "RANK_MASTER" -> {
+                    itemTitle.setTextColor(resources.getColor(R.color.RANK_MASTER))
+                    itemRarityColor.setBackgroundColor(resources.getColor(R.color.RANK_MASTER))
+                }
+                "RANK_LEGEND" -> {
+                    itemTitle.setTextColor(resources.getColor(R.color.RANK_LEGEND))
+                    itemRarityColor.setBackgroundColor(resources.getColor(R.color.RANK_LEGEND))
+                }
+            }
             itemState.text = item.status.state
+            Picasso.get().load(ApiClient.DATABASE_BASE_URL + item.iconPath).into(itemIcon)
             item.infoBlocks?.let { infoBlocksAdapter.submitList(it) }
         }
     }
