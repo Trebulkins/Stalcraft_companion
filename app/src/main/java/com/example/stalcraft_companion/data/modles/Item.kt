@@ -21,7 +21,7 @@ data class Item (
     val cat get() = category.split("/")[0]
     val subcat get() = category.split("/").getOrNull(1)
 
-    val iconPath get() = "icons/$category/$name.png"
+    val iconPath get() = "icons/$category/$id.png"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

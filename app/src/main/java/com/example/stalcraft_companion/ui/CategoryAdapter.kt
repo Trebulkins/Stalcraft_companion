@@ -47,7 +47,6 @@ object CategoryUtils {
 class CategoryAdapter(
     private val onItemClick: (Item) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
     companion object {
         private const val TYPE_CATEGORY = 0
         private const val TYPE_SUBCATEGORY = 1
@@ -162,7 +161,9 @@ class CategoryAdapter(
             itemView.findViewById<View>(R.id.item_rarity_color).setBackgroundColor(0x000)
             itemView.findViewById<TextView>(R.id.item_state).text = item.status.state
             Picasso.get().load(ApiClient.DATABASE_BASE_URL + item.iconPath).into(itemView.findViewById<ImageView>(R.id.item_icon))
-            itemView.setOnClickListener { onItemClick(item) }
+            itemView.setOnClickListener {
+                onItemClick(item) // Передаем кликнутый item
+            }
         }
     }
 }

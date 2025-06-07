@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.example.stalcraft_companion.data.ApiClient
+import com.example.stalcraft_companion.data.modles.Item
 import com.example.stalcraft_companion.databinding.DialogProgressBinding
 import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat

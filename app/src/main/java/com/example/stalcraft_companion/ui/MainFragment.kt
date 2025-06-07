@@ -16,14 +16,18 @@ class MainFragment : Fragment() {
         fun onItemSelected(item: Item)
     }
 
+    private var listener: OnItemSelectedListener? = null
     private lateinit var binding: FragmentMainBinding
     private lateinit var viewModel: ItemViewModel
-    private var listener: OnItemSelectedListener? = null
     private lateinit var adapter: CategoryAdapter
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        listener = context as? OnItemSelectedListener
+        if (context is OnItemSelectedListener) {
+            listener = context
+        } else {
+            throw RuntimeException("$context must implement OnItemSelectedListener")
+        }
     }
 
     override fun onCreateView(
@@ -39,7 +43,10 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel = ViewModelProvider(requireActivity())[ItemViewModel::class.java]
-        adapter = CategoryAdapter { item -> listener?.onItemSelected(item) }
+        adapter = CategoryAdapter { item ->
+            // Передаем выбранный item в listener (Activity)
+            listener?.onItemSelected(item)
+        }
 
         binding.mainRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
@@ -52,6 +59,11 @@ class MainFragment : Fragment() {
                 adapter.submitCategories(categories)
             }
         }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        listener = null
     }
 
     companion object {

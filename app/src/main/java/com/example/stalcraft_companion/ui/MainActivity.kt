@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 private const val TAG = "MainActivity"
-class MainActivity : AppCompatActivity(), UpdateDialog.UpdateListener {
+class MainActivity : AppCompatActivity(), UpdateDialog.UpdateListener, MainFragment.OnItemSelectedListener {
     private var progressDialog: ProgressDialog? = null
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: ItemViewModel
@@ -29,6 +29,19 @@ class MainActivity : AppCompatActivity(), UpdateDialog.UpdateListener {
 
         isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
         viewModel = ViewModelProvider(this)[ItemViewModel::class.java]
+
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.main_container, MainFragment.newInstance())
+                .commit()
+
+            if (isLandscape) {
+                // В альбомной ориентации сразу добавляем пустой DetailsFragment
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.details_container, DetailsFragment.newInstance(null))
+                    .commit()
+            }
+        }
 
         checkForUpdates()
     }
