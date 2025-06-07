@@ -66,9 +66,9 @@ class InfoBlocksAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 LayoutInflater.from(parent.context)
                     .inflate(R.layout.item_infoblock_keyvalue, parent, false)
             )
-            else -> UnkbownBlockViewHolder(
+            else -> UnknownBlockViewHolder(
                 LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_infoblock_keyvalue, parent, false)
+                    .inflate(R.layout.item_infoblock_text, parent, false)
             )
         }
     }
@@ -119,11 +119,10 @@ class InfoBlocksAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     inner class DamageBlockViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(block: InfoBlock.DamageBlock) {
-            itemView.findViewById<TextView>(R.id.damageVal1).text = "startDamage: ${block.startDamage}"
-            itemView.findViewById<TextView>(R.id.damageVal2).text = "damageDecreaseStart: ${block.damageDecreaseStart}"
-            itemView.findViewById<TextView>(R.id.damageVal3).text = "endDamage: ${block.endDamage}"
-            itemView.findViewById<TextView>(R.id.damageVal4).text = "damageDecreaseEnd: ${block.damageDecreaseEnd}"
-            itemView.findViewById<TextView>(R.id.damageVal5).text = "maxDistance: ${block.maxDistance}"
+            itemView.findViewById<TextView>(R.id.damageVal1).text = "До ${block.damageDecreaseStart} метров"
+            itemView.findViewById<TextView>(R.id.damageVal2).text = "От ${block.damageDecreaseEnd} до ${block.maxDistance}"
+            itemView.findViewById<TextView>(R.id.damageVal3).text = "${block.startDamage} ед."
+            itemView.findViewById<TextView>(R.id.damageVal4).text = "${block.endDamage} ед."
         }
     }
 
@@ -203,6 +202,5 @@ class InfoBlocksAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
     }
 
-    inner class UnkbownBlockViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-    }
+    inner class UnknownBlockViewHolder(view: View) : RecyclerView.ViewHolder(view)
 }
