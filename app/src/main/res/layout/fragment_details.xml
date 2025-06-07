@@ -9,7 +9,7 @@
         android:id="@+id/TemplateLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible">
+        android:visibility="invisible">
 
         <TextView
             android:id="@+id/templateText"
@@ -30,7 +30,7 @@
         android:id="@+id/ItemLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="invisible">
+        android:visibility="visible">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/item_infoBlocks"
