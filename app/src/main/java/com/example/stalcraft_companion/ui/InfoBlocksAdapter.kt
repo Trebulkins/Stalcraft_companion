@@ -105,12 +105,7 @@ class InfoBlocksAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     inner class TextBlockViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(block: InfoBlock.TextBlock) {
-            itemView.findViewById<TextView>(R.id.title).text = when (val text = block.title) {
-                is TranslationString.Text -> text.text
-                is TranslationString.Translation -> text.lines.ru
-                null -> null
-            }
-            itemView.findViewById<TextView>(R.id.text).text = when (val text = block.text) {
+            itemView.findViewById<TextView>(R.id.title).text = when (val text = block.text) {
                 is TranslationString.Text -> text.text
                 is TranslationString.Translation -> text.lines.ru
             }
@@ -138,9 +133,9 @@ class InfoBlocksAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     inner class ItemBlockViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(block: InfoBlock.ItemBlock) {
-            itemView.findViewById<TextView>(R.id.text).text = when (val name = block.name) {
-                is TranslationString.Text -> name.text
-                is TranslationString.Translation -> name.lines.ru
+            itemView.findViewById<TextView>(R.id.title).text = when (val name = block.name) {
+                is TranslationString.Text -> "[${name.text}]"
+                is TranslationString.Translation -> "[${name.lines.ru}]"
             }
         }
     }
