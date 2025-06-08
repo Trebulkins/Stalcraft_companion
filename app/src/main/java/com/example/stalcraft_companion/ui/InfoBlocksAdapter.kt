@@ -120,7 +120,7 @@ class InfoBlocksAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     inner class DamageBlockViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(block: InfoBlock.DamageBlock) {
             itemView.findViewById<TextView>(R.id.damageVal1).text = "До ${block.damageDecreaseStart} метров"
-            itemView.findViewById<TextView>(R.id.damageVal2).text = "От ${block.damageDecreaseEnd} до ${block.maxDistance}"
+            itemView.findViewById<TextView>(R.id.damageVal2).text = "От ${block.damageDecreaseEnd} до ${block.maxDistance} метров"
             itemView.findViewById<TextView>(R.id.damageVal3).text = "${block.startDamage} ед."
             itemView.findViewById<TextView>(R.id.damageVal4).text = "${block.endDamage} ед."
         }
@@ -132,7 +132,7 @@ class InfoBlocksAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 is TranslationString.Text -> name.text
                 is TranslationString.Translation -> name.lines.ru
             }
-            itemView.findViewById<TextView>(R.id.text).text = "[${block.min}, ${block.max}]"
+            itemView.findViewById<TextView>(R.id.text).text = "[${if (block.min > 0) "+" else ""}${block.min}; ${if (block.max > 0) "+" else ""}${block.max}]"
         }
     }
 
@@ -157,7 +157,6 @@ class InfoBlocksAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     inner class ListBlockViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private val title: TextView = view.findViewById(R.id.list_title)
         private val recycler: RecyclerView = view.findViewById(R.id.list_recycler)
         private val adapter = InfoBlocksAdapter()
 
@@ -170,10 +169,14 @@ class InfoBlocksAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
 
         fun bind(block: InfoBlock.ListBlock) {
-            if (!block.elements.isNullOrEmpty()) {
-                title.text = when (val titleText = block.title) {
-                    is TranslationString.Text -> titleText.text
-                    is TranslationString.Translation -> titleText.lines.ru
+            if (block.elements?.isNotEmpty() == true) {
+                when (val title = block.title) {
+                    is TranslationString.Text ->
+                        if (title.text != "") itemView.findViewById<TextView>(R.id.list_title).text = title.text
+                        else itemView.findViewById<TextView>(R.id.list_title).visibility = View.GONE
+                    is TranslationString.Translation ->
+                        if (title.lines.ru != "") itemView.findViewById<TextView>(R.id.list_title).text = title.lines.ru
+                        else itemView.findViewById<TextView>(R.id.list_title).visibility = View.GONE
                 }
                 block.elements.let { adapter.submitList(it) }
             }

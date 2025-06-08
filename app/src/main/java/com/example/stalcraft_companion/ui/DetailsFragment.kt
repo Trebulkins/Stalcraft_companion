@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.stalcraft_companion.R
@@ -97,7 +99,20 @@ class DetailsFragment : Fragment() {
                     itemRarityColor.setBackgroundColor(resources.getColor(R.color.RANK_LEGEND))
                 }
             }
-            itemState.text = item.status.state
+            itemState.setText(when (item.status.state) {
+                "NONE" -> R.string.STATE_NONE
+                "NON_DROP" -> R.string.STATE_NON_DROP
+                "PERSONAL_ON_USE" -> R.string.STATE_PERSONAL_ON_USE
+                "PERSONAL_DROP_ON_GET" -> R.string.STATE_PERSONAL_DROP_ON_GET
+                else -> R.string.STATE_NONE
+            })
+            itemStateImg.setImageResource(when (item.status.state) {
+                "NONE" -> R.drawable.invisible
+                "NON_DROP" -> R.drawable.non_drop
+                "PERSONAL_ON_USE" -> R.drawable.personal_on_use
+                "PERSONAL_DROP_ON_GET" -> R.drawable.personal_drop_on_get
+                else -> R.drawable.invisible
+            })
             Picasso.get().load(ApiClient.DATABASE_BASE_URL + item.iconPath).into(itemIcon)
             item.infoBlocks?.let { infoBlocksAdapter.submitList(it) }
         }

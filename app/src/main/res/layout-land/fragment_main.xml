@@ -5,7 +5,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/main_recyclerView"
-        android:layout_width="366dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="8dp" />
 </FrameLayout>

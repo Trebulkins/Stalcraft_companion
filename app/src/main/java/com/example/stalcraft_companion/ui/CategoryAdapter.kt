@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toDrawable
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stalcraft_companion.R
@@ -144,13 +145,13 @@ class CategoryAdapter(
 
     inner class CategoryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(title: String) {
-            itemView.findViewById<TextView>(R.id.tvTitle).text = title
+            itemView.findViewById<TextView>(R.id.tvTitle).text = context.resources.getString(context.resources.getIdentifier(title, "string", context.packageName))
         }
     }
 
     inner class SubcategoryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(title: String) {
-            itemView.findViewById<TextView>(R.id.tvTitle).text = title
+            itemView.findViewById<TextView>(R.id.tvTitle).text = context.resources.getString(context.resources.getIdentifier(title, "string", context.packageName))
         }
     }
 
@@ -160,33 +161,36 @@ class CategoryAdapter(
                 is TranslationString.Text -> name.text
                 is TranslationString.Translation -> name.lines.ru
             }
+
             when (item.color) {
                 "DEFAULT" -> {
-                    itemView.findViewById<TextView>(R.id.item_title).setTextColor(android.graphics.Color.parseColor("#eeeeee"))
-                    itemView.findViewById<View>(R.id.item_rarity_color).setBackgroundColor(android.graphics.Color.parseColor("#eeeeee"))
+                    itemView.findViewById<TextView>(R.id.item_title).setTextColor(ContextCompat.getColor(context, R.color.DEFAULT))
+                    itemView.findViewById<View>(R.id.item_rarity_color).setBackgroundColor(ContextCompat.getColor(context, R.color.DEFAULT))
                 }
                 "RANK_NEWBIE" -> {
-                    itemView.findViewById<TextView>(R.id.item_title).setTextColor(android.graphics.Color.parseColor("#7def7d"))
-                    itemView.findViewById<View>(R.id.item_rarity_color).setBackgroundColor(android.graphics.Color.parseColor("#7def7d"))
+                    itemView.findViewById<TextView>(R.id.item_title).setTextColor(ContextCompat.getColor(context, R.color.RANK_NEWBIE))
+                    itemView.findViewById<View>(R.id.item_rarity_color).setBackgroundColor(ContextCompat.getColor(context, R.color.RANK_NEWBIE))
                 }
                 "RANK_STALKER" -> {
-                    itemView.findViewById<TextView>(R.id.item_title).setTextColor(android.graphics.Color.parseColor("#8d8dff"))
-                    itemView.findViewById<View>(R.id.item_rarity_color).setBackgroundColor(android.graphics.Color.parseColor("#8d8dff"))
+                    itemView.findViewById<TextView>(R.id.item_title).setTextColor(ContextCompat.getColor(context, R.color.RANK_STALKER))
+                    itemView.findViewById<View>(R.id.item_rarity_color).setBackgroundColor(ContextCompat.getColor(context, R.color.RANK_STALKER))
                 }
                 "RANK_VETERAN" -> {
-                    itemView.findViewById<TextView>(R.id.item_title).setTextColor(android.graphics.Color.parseColor("#d968c4"))
-                    itemView.findViewById<View>(R.id.item_rarity_color).setBackgroundColor(android.graphics.Color.parseColor("#d968c4"))
+                    itemView.findViewById<TextView>(R.id.item_title).setTextColor(ContextCompat.getColor(context, R.color.RANK_VETERAN))
+                    itemView.findViewById<View>(R.id.item_rarity_color).setBackgroundColor(ContextCompat.getColor(context, R.color.RANK_VETERAN))
                 }
                 "RANK_MASTER" -> {
-                    itemView.findViewById<TextView>(R.id.item_title).setTextColor(android.graphics.Color.parseColor("#ff5767"))
-                    itemView.findViewById<View>(R.id.item_rarity_color).setBackgroundColor(android.graphics.Color.parseColor("#ff5767"))
+                    itemView.findViewById<TextView>(R.id.item_title).setTextColor(ContextCompat.getColor(context, R.color.RANK_MASTER))
+                    itemView.findViewById<View>(R.id.item_rarity_color).setBackgroundColor(ContextCompat.getColor(context, R.color.RANK_MASTER))
                 }
                 "RANK_LEGEND" -> {
-                    itemView.findViewById<TextView>(R.id.item_title).setTextColor(android.graphics.Color.parseColor("#ffdd66"))
-                    itemView.findViewById<View>(R.id.item_rarity_color).setBackgroundColor(android.graphics.Color.parseColor("#ffdd66"))
+                    itemView.findViewById<TextView>(R.id.item_title).setTextColor(ContextCompat.getColor(context, R.color.RANK_LEGEND))
+                    itemView.findViewById<View>(R.id.item_rarity_color).setBackgroundColor(ContextCompat.getColor(context, R.color.RANK_LEGEND))
                 }
             }
+
             itemView.findViewById<TextView>(R.id.item_category).text = item.category
+
             itemView.findViewById<TextView>(R.id.item_state).setText(when (item.status.state) {
                 "NONE" -> R.string.STATE_NONE
                 "NON_DROP" -> R.string.STATE_NON_DROP
@@ -201,6 +205,7 @@ class CategoryAdapter(
                 "PERSONAL_DROP_ON_GET" -> R.drawable.personal_drop_on_get
                 else -> R.drawable.invisible
             })
+
             Picasso.get().load(ApiClient.DATABASE_BASE_URL + item.iconPath).into(itemView.findViewById<ImageView>(R.id.item_icon))
 
             itemView.setOnClickListener {
