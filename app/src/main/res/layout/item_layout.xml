@@ -30,32 +30,35 @@
 
         <TextView
             android:id="@+id/item_title"
-            android:layout_width="202dp"
+            android:layout_width="212dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
             android:layout_marginTop="4dp"
-            android:layout_marginEnd="22dp"
+            android:fontFamily="@font/play"
             android:text="ОЦ-33 «Пернач»"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/item_icon"
             app:layout_constraintTop_toBottomOf="@+id/item_category" />
 
         <TextView
             android:id="@+id/item_category"
             android:layout_width="212dp"
-            android:layout_height="18dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="12dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="12dp"
+            android:fontFamily="@font/jura_light"
             android:text="Оружие / Пистолеты"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/item_icon"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/item_state"
-            android:layout_width="wrap_content"
-            android:layout_height="14dp"
+            android:layout_width="190dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:fontFamily="@font/jura_light"
             android:text="Персональный при использовании"
             android:textSize="10sp"
             app:layout_constraintStart_toEndOf="@+id/item_state_img"
@@ -65,11 +68,10 @@
             android:id="@+id/item_state_img"
             android:layout_width="14dp"
             android:layout_height="14dp"
+            android:layout_marginStart="12dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="208dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/item_title"
-            app:srcCompat="@drawable/personal_on_use" />
+            app:layout_constraintStart_toEndOf="@+id/item_icon"
+            app:layout_constraintTop_toBottomOf="@+id/item_title" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

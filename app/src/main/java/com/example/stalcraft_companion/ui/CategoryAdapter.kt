@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.graphics.drawable.toDrawable
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stalcraft_companion.R
 import com.example.stalcraft_companion.data.ApiClient
@@ -186,7 +187,20 @@ class CategoryAdapter(
                 }
             }
             itemView.findViewById<TextView>(R.id.item_category).text = item.category
-            itemView.findViewById<TextView>(R.id.item_state).text = item.status.state
+            itemView.findViewById<TextView>(R.id.item_state).setText(when (item.status.state) {
+                "NONE" -> R.string.STATE_NONE
+                "NON_DROP" -> R.string.STATE_NON_DROP
+                "PERSONAL_ON_USE" -> R.string.STATE_PERSONAL_ON_USE
+                "PERSONAL_DROP_ON_GET" -> R.string.STATE_PERSONAL_DROP_ON_GET
+                else -> R.string.STATE_NONE
+            })
+            itemView.findViewById<ImageView>(R.id.item_state_img).setImageResource(when (item.status.state) {
+                "NONE" -> R.drawable.invisible
+                "NON_DROP" -> R.drawable.non_drop
+                "PERSONAL_ON_USE" -> R.drawable.personal_on_use
+                "PERSONAL_DROP_ON_GET" -> R.drawable.personal_drop_on_get
+                else -> R.drawable.invisible
+            })
             Picasso.get().load(ApiClient.DATABASE_BASE_URL + item.iconPath).into(itemView.findViewById<ImageView>(R.id.item_icon))
 
             itemView.setOnClickListener {

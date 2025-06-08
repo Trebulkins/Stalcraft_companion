@@ -20,16 +20,25 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/item_rarity_color" />
 
-        <ImageView
-            android:id="@+id/leave_layout"
+        <androidx.cardview.widget.CardView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="5dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:background="@color/white"
+            app:cardCornerRadius="20dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/baseline_clear_24" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/leave_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/material_dynamic_secondary70"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/baseline_clear_24" />
+        </androidx.cardview.widget.CardView>
 
         <View
             android:id="@+id/item_rarity_color"
@@ -44,6 +53,7 @@
             android:layout_height="14dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:fontFamily="@font/jura_light"
             android:textSize="10sp"
             app:layout_constraintStart_toEndOf="@+id/item_state_img"
             app:layout_constraintTop_toBottomOf="@+id/item_title" />
@@ -72,6 +82,7 @@
             android:layout_height="18dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:fontFamily="@font/jura_light"
             app:layout_constraintStart_toEndOf="@+id/item_icon"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -81,6 +92,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
+            android:fontFamily="@font/play"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/item_icon"

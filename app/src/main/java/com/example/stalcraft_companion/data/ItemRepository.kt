@@ -1,14 +1,12 @@
 package com.example.stalcraft_companion.data
 
 import android.content.Context
-import android.util.Log
 import com.example.stalcraft_companion.data.modles.Item
 import com.example.stalcraft_companion.data.modles.Prefs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
-private const val TAG = "ItemRepository"
 class ItemRepository(private val itemDao: ItemDao) {
     suspend fun needsUpdate(context: Context): Boolean {
         return try {
